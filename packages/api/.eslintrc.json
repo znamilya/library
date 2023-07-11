@@ -1,0 +1,4 @@
+{
+  "root": true,
+  "extends": ["@checklister/eslint-config-custom"]
+}
