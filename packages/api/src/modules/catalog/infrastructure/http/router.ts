@@ -1,13 +1,15 @@
 import express from "express";
 
+import { GetAllBooksController } from "./controllers/GetAllBooks";
+import { GetAllBooksUseCase } from "../../useCases";
+import { MemoryBooksRepo } from "../repos/MemoryBooksRepo";
+
 const catalogRouter = express.Router();
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const getAllBooksController = new GetAllBooksController(
+  new GetAllBooksUseCase(new MemoryBooksRepo()),
+);
 
-catalogRouter.get("/", async (req, res) => {
-  await wait(2000);
-
-  res.json([]);
-});
+catalogRouter.get("/", async (req, res) => getAllBooksController.execute(req, res));
 
 export { catalogRouter };

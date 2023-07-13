@@ -9,7 +9,6 @@ export type Member = {
   fullName: string;
   borrowedBooks: ReadBook[];
   reservedBooks: ReadBook[];
-  readBooks: ReadBook[];
 };
 
 export const canReserveMoreBooks = (member: Member): boolean => {

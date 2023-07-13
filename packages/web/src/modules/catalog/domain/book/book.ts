@@ -13,7 +13,6 @@ export type Book = {
   isbn: ISBN;
   borrowedBy: Borrower | null;
   reservedBy: Borrower | null;
-  prevBorrowers: BorrowerId[];
 };
 
 // CHECKS

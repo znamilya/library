@@ -9,6 +9,10 @@ export const AllBooksFragment = () => {
     return null;
   }
 
+  if (!allBooks.length) {
+    return <div>No books found</div>;
+  }
+
   return (
     <div>
       {allBooks.map((book) => (
