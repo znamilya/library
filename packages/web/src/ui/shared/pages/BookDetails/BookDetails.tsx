@@ -7,7 +7,7 @@ import {
   BookId,
   RemoveBookFragment,
   RemoveBorrowerFragment,
-} from "@/modules/catalog";
+} from "@/modules/books";
 
 export const BookDetailsPage = () => {
   const { bookId } = useParams();

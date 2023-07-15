@@ -10,7 +10,7 @@
       "outputMode": "new-only"
     },
     "lint": {},
-    "types": {},
+    "checktypes": {},
     "build": {
       "dependsOn": ["^lint", "^test", "^build"],
       "inputs": ["src/**"],

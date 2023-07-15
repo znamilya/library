@@ -1,4 +1,4 @@
-import { MemberBorrowingHistoryFragment } from "@/modules/membership";
+import { MemberBorrowingHistoryFragment } from "@/modules/members";
 
 export const MemberProfilePage = () => {
   return (

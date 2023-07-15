@@ -1,8 +1,9 @@
 {
   "extends": "@library/tsconfig/tsconfig.react.json",
   "compilerOptions": {
+    "types": ["cypress", "cypress-plugin-steps"],
     "paths": { "@/*": ["./src/*"] },
     "outDir": "./dist"
   },
-  "include": ["src"]
+  "include": ["src", "cypress"]
 }

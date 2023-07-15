@@ -6,10 +6,16 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "types": "tsc --noEmit",
-    "build": "tsc"
+    "checktypes": "tsc --noEmit",
+    "build": "tsc",
+    "test:components": "cypress open --component --browser chrome",
+    "test:e2e": "cypress open --e2e --config baseUrl=http://localhost:8889"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.14.0",
     "@tanstack/react-query": "^4.29.19",
     "axios": "^1.4.0",
     "react": "^18.2.0",
@@ -20,11 +26,16 @@
     "vite": "^4.4.0"
   },
   "devDependencies": {
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "@faker-js/faker": "^8.0.2",
     "@library/eslint-config-custom": "*",
     "@library/tsconfig": "*",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@vitejs/plugin-react": "^4.0.2",
+    "cypress": "^12.17.1",
+    "cypress-plugin-steps": "^1.1.1",
+    "eslint-plugin-cypress": "^2.13.3",
     "rollup-plugin-visualizer": "^5.9.2",
     "typescript": "^5.1.6"
   }

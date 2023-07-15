@@ -4,7 +4,7 @@ import cors from "cors";
 import { v1Router } from "./v1Router";
 
 const app = express();
-const PORT = process.env.PORT || 1234;
+const PORT = process.env.PORT || 1235;
 
 app.use(cors());
 app.use(bodyParser.json());

@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "types": "turbo run types",
+    "checktypes": "turbo run checktypes",
     "test": "turbo run test",
     "build": "turbo run build"
   },

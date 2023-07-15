@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router";
 import { Link } from "react-router-dom";
+import Container from "@mui/material/Container";
 
 import { AddBookPage } from "@/ui/shared/pages/AddBook";
 import { BookDetailsPage } from "@/ui/shared/pages/BookDetails";
@@ -12,7 +13,7 @@ import { NotFound } from "@/ui/shared/pages/NotFound";
 
 export const App = () => {
   return (
-    <div>
+    <Container>
       <header>
         <Link to="/">Home</Link> <Link to="/profile">Profile</Link>
       </header>
@@ -33,6 +34,6 @@ export const App = () => {
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </div>
+    </Container>
   );
 };

@@ -1,4 +1,4 @@
-import { RegisterMemberFragment } from "@/modules/membership";
+import { RegisterMemberFragment } from "@/modules/members";
 
 export const MemberRegistrationPage = () => {
   return (
