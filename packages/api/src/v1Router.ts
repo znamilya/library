@@ -1,5 +1,5 @@
 import express from "express";
-import { catalogRouter } from "./modules/books";
+import { catalogRouter } from "./infra/http/router";
 
 const v1Router = express.Router();
 

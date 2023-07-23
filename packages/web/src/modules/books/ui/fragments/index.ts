@@ -1,5 +1,5 @@
 export * from "./AddBorrower";
-export * from "./AllBooks";
+export * from "../../useCases/viewAllBooks/AllBooks";
 export * from "./BookBorrowingHistory";
 export * from "./BookDetails";
 export * from "./RemoveBook";

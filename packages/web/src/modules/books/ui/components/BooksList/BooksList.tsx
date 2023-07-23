@@ -3,18 +3,24 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
-import { Book } from "@/modules/books/domain";
+import { Book, BookId } from "@/modules/books/domain";
 import { CollectionComponentProps } from "@/modules/shared";
 import { BooksListTestIds } from "./BooksList.testIds";
 
-type BooksListProps = CollectionComponentProps<"books", Book>;
+type BooksListProps = CollectionComponentProps<
+  "books",
+  Book,
+  {
+    renderBorrowButton: (bookId: BookId) => React.ReactNode;
+  }
+>;
 
-export const BooksList = ({ books, ...props }: BooksListProps) => {
+export const BooksList = ({ books, renderBorrowButton, ...props }: BooksListProps) => {
   return (
-    <Stack spacing={4} data-testid={BooksListTestIds.root} {...props}>
+    <Stack spacing={2} data-testid={BooksListTestIds.root} {...props}>
       {books.map((book) => (
         <div data-testid={BooksListTestIds.item} key={book.id}>
-          <Typography variant="h4">
+          <Typography variant="h6">
             <MuiLink component={Link} to={`/catalog/${book.id}`}>
               {book.title}
             </MuiLink>
@@ -27,9 +33,7 @@ export const BooksList = ({ books, ...props }: BooksListProps) => {
           >
             Author: {book.author}, ISBN: {book.isbn}
           </Typography>
-          <Typography variant="body1" mt={1}>
-            {book.description}
-          </Typography>
+          {renderBorrowButton(book.id)}
         </div>
       ))}
     </Stack>
