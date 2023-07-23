@@ -13,5 +13,6 @@ export type BorrowingPersistence = {
 export type IBorrowingsRepo = {
   findAll(): Promise<Either<Error, Borrowing[]>>;
   findById(id: string): Promise<Either<Error, Borrowing>>;
+  findByBookAndMember(bookId: string, memberId: string): Promise<Either<Error, Borrowing>>;
   save(borrowing: Borrowing): Promise<Either<Error, boolean>>;
 };

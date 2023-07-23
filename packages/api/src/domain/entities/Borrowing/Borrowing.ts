@@ -29,6 +29,10 @@ class Borrowing extends Entity<BorrowingProps> {
     return this.props.checkInDate;
   }
 
+  checkIn(date: Date) {
+    this.props.checkInDate = date;
+  }
+
   static create(props: BorrowingProps, id?: string) {
     return new Borrowing(props, id);
   }

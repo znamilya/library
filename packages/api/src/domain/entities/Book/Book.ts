@@ -24,11 +24,11 @@ class Book extends Entity<BookProps> {
     return this.props.borrowingIds;
   }
 
-  checkout(borrowingId: string) {
+  checkOut(borrowingId: string) {
     this.props.borrowingIds.push(borrowingId);
   }
 
-  checkin(borrowingId: string) {
+  checkIn(borrowingId: string) {
     this.props.borrowingIds = this.props.borrowingIds.filter((id) => id !== borrowingId);
   }
 

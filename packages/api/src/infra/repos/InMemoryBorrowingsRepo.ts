@@ -29,6 +29,18 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
     return right(BorrowingsMapper.persistenceToEntity(borrowing));
   }
 
+  async findByBookAndMember(bookId: string, memberId: string) {
+    const borrowing = borrowings.find(
+      (borrowing) => borrowing.bookId === bookId && borrowing.memberId === memberId,
+    );
+
+    if (!borrowing) {
+      return left(new Error("borrowing not found"));
+    }
+
+    return right(BorrowingsMapper.persistenceToEntity(borrowing));
+  }
+
   async save(borrowing: Borrowing) {
     const index = borrowings.findIndex((b) => b.id === borrowing.id);
 

@@ -60,7 +60,7 @@ class CheckoutBookUseCase extends BaseUseCase {
       return left(new Error(`Book can't be checked out. ${saveBorrowingResult.value}`));
     }
 
-    book.checkout(borrowing.id);
+    book.checkOut(borrowing.id);
 
     const saveBookResult = await this.booksRepo.save(book);
 
