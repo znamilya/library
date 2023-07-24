@@ -1,3 +1,4 @@
+import { right } from "@sweet-monads/either";
 import { Entity } from "../../../shared/domain";
 
 type BookProps = {
@@ -37,7 +38,7 @@ class Book extends Entity<BookProps> {
   }
 
   static create(props: BookProps, id?: string) {
-    return new Book(props, id);
+    return right(new Book(props, id));
   }
 }
 

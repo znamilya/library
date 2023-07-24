@@ -1,4 +1,4 @@
-import { left, right } from "@sweet-monads/either";
+import { left, mergeInOne, right } from "@sweet-monads/either";
 import { Book } from "../../domain/entities/Book/Book";
 import { BookPersistence, IBooksRepo } from "../../domain/repos/IBooksRepo";
 import { BooksMapper } from "../../mappers/Books";
@@ -45,7 +45,14 @@ const books: BookPersistence[] = [
 
 class InMemoryBooksRepo implements IBooksRepo {
   async findAll() {
-    return right(books.map(BooksMapper.persistenceToEntity));
+    const booksEntityOrError = books.map(BooksMapper.persistenceToEntity);
+    const x = mergeInOne(booksEntityOrError);
+
+    if (x.isLeft()) {
+      return left(new Error("Error while mapping books"));
+    }
+
+    return right(x.value);
   }
 
   async findById(id: string) {
@@ -55,7 +62,13 @@ class InMemoryBooksRepo implements IBooksRepo {
       return left(new Error("Book not found"));
     }
 
-    return right(BooksMapper.persistenceToEntity(book));
+    const bookEntityOrError = BooksMapper.persistenceToEntity(book);
+
+    if (bookEntityOrError.isLeft()) {
+      return left(bookEntityOrError.value);
+    }
+
+    return right(bookEntityOrError.value);
   }
 
   async save(book: Book) {
