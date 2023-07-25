@@ -12,5 +12,6 @@ export type BookPersistence = {
 export type IBooksRepo = {
   findAll(): Promise<Either<Error, Book[]>>;
   findById(id: string): Promise<Either<Error, Book>>;
+  removeById(id: string): Promise<Either<Error, Book>>;
   save(book: Book): Promise<Either<Error, boolean>>;
 };

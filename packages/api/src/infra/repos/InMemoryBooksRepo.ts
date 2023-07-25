@@ -55,12 +55,31 @@ class InMemoryBooksRepo implements IBooksRepo {
     return right(x.value);
   }
 
-  async findById(id: string) {
-    const book = books.find((book) => book.id === id);
+  async findById(bookId: string) {
+    const book = books.find((book) => book.id === bookId);
 
     if (!book) {
       return left(new Error("Book not found"));
     }
+
+    const bookEntityOrError = BooksMapper.persistenceToEntity(book);
+
+    if (bookEntityOrError.isLeft()) {
+      return left(bookEntityOrError.value);
+    }
+
+    return right(bookEntityOrError.value);
+  }
+
+  async removeById(bookId: string) {
+    const index = books.findIndex((book) => book.id === bookId);
+    const book = books[index];
+
+    if (!book) {
+      return left(new Error("Book not found"));
+    }
+
+    books.splice(index, 1);
 
     const bookEntityOrError = BooksMapper.persistenceToEntity(book);
 
