@@ -1,8 +1,7 @@
+import { GetAllBooksUseCase } from "@/useCases/GetAllBooks";
 import { Request, Response } from "express";
 import { BooksMapper } from "../../../mappers/Books";
-import { BaseUseCase } from "../../../shared/application/BaseUseCase";
 import { BaseController } from "../../../shared";
-import { GetAllBooksUseCase } from "@/useCases/GetAllBooks";
 
 class GetAllBooksController extends BaseController {
   useCase: GetAllBooksUseCase;
@@ -13,8 +12,14 @@ class GetAllBooksController extends BaseController {
     this.useCase = useCase;
   }
 
-  async executeImpl(_req: Request, res: Response) {
-    const books = await this.useCase.execute();
+  async executeImpl(req: Request, res: Response) {
+    const title = req.query.title;
+
+    if (title && typeof title !== "string") {
+      return res.status(400).send("Title must be a string");
+    }
+
+    const books = await this.useCase.execute({ title });
 
     if (books.isLeft()) {
       return res.status(500).send(books.value.message);

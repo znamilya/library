@@ -55,6 +55,20 @@ class InMemoryBooksRepo implements IBooksRepo {
     return right(x.value);
   }
 
+  async findByTitle(title: string) {
+    const booksEntityOrError = books
+      .filter((book) => book.title.toLowerCase().includes(title.toLowerCase()))
+      .map(BooksMapper.persistenceToEntity);
+
+    const x = mergeInOne(booksEntityOrError);
+
+    if (x.isLeft()) {
+      return left(new Error("Error while mapping books"));
+    }
+
+    return right(x.value);
+  }
+
   async findById(bookId: string) {
     const book = books.find((book) => book.id === bookId);
 
