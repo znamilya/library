@@ -22,12 +22,16 @@ class AddBookUseCase extends BaseUseCase {
     });
 
     if (bookOrError.isLeft()) {
-      return left(new Error("Error while creating book"));
+      return left(new Error(`Error while creating book. ${bookOrError.value}`));
     }
 
     const book = bookOrError.value;
 
-    await this.booksRepo.save(book);
+    const saveBookResult = await this.booksRepo.save(book);
+
+    if (saveBookResult.isLeft()) {
+      return left(new Error(`Can't save book. ${saveBookResult.value}`));
+    }
 
     return right(book);
   }

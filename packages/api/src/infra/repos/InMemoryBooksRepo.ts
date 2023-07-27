@@ -9,35 +9,35 @@ const books: BookPersistence[] = [
   {
     id: "1",
     title: "The Lord of the Rings",
-    isbn: "9780261103252",
+    isbn: "9992158107",
     author: "J. R. R. Tolkien",
     borrowingIds: [],
   },
   {
     id: "2",
     title: "The Hobbit",
-    isbn: "9780544003415",
+    isbn: "9971502100",
     author: "J. R. R. Tolkien",
     borrowingIds: [],
   },
   {
     id: "3",
     title: "Harry Potter and the Philosopher's Stone",
-    isbn: "9780747532743",
+    isbn: "9604250590",
     author: "J. K. Rowling",
     borrowingIds: [],
   },
   {
     id: "4",
     title: "The Hitchhiker's Guide to the Galaxy",
-    isbn: "9780345391803",
+    isbn: "8090273416",
     author: "Douglas Adams",
     borrowingIds: [],
   },
   {
     id: "5",
     title: "1984",
-    isbn: "9780451524935",
+    isbn: "007462542X",
     author: "George Orwell",
     borrowingIds: [],
   },
@@ -71,6 +71,10 @@ class InMemoryBooksRepo implements IBooksRepo {
     return right(bookEntityOrError.value);
   }
 
+  private async findBy(predicate: (book: BookPersistence) => boolean) {
+    return books.find((book) => predicate(book));
+  }
+
   async removeById(bookId: string) {
     const index = books.findIndex((book) => book.id === bookId);
     const book = books[index];
@@ -90,13 +94,19 @@ class InMemoryBooksRepo implements IBooksRepo {
     return right(bookEntityOrError.value);
   }
 
-  async save(book: Book) {
-    const index = books.findIndex((b) => b.id === book.id);
+  async save(newBook: Book) {
+    const existingBook = await this.findBy((book) => book.isbn === newBook.isbn);
+
+    if (existingBook) {
+      return left(new Error(`Book with ISBN ${newBook.isbn} already exists`));
+    }
+
+    const index = books.findIndex((b) => b.id === newBook.id);
 
     if (index === -1) {
-      books.push(BooksMapper.entityToPersistence(book));
+      books.push(BooksMapper.entityToPersistence(newBook));
     } else {
-      books[index] = BooksMapper.entityToPersistence(book);
+      books[index] = BooksMapper.entityToPersistence(newBook);
     }
 
     return right(true);
