@@ -1,6 +1,6 @@
-import { Member } from "@/domain/entities/Member";
-import { IMembersRepo, MemberPersistence } from "@/domain/repos/IMembersRepo";
 import { left, right } from "@sweet-monads/either";
+import { Member } from "../../domain/entities/Member";
+import { IMembersRepo, MemberPersistence } from "../../domain/repos/IMembersRepo";
 import { MembersMapper } from "../../mappers/Members";
 
 const members: MemberPersistence[] = [

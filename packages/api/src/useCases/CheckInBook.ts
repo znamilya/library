@@ -22,7 +22,7 @@ class CheckInBookUseCase implements ICheckInBookUseCase {
 
     const borrowing = borrowingOrError.value;
 
-    borrowing.checkIn(new Date());
+    borrowing.complete(new Date());
     this.borrowingsRepo.save(borrowing);
 
     const bookOrError = await this.booksRepo.findById(borrowing.bookId);

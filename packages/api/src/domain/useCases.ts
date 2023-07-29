@@ -1,6 +1,7 @@
 import { NewBookDto } from "../dtos/Book";
 import { IUseCase } from "../shared/application/types";
 import { Book } from "./entities/Book";
+import { Borrowing } from "./entities/Borrowing";
 
 export type GetAllBooksUseParamsParams = {
   title?: string;
@@ -17,3 +18,6 @@ export type ICheckOutBookUseCase = IUseCase<CheckOutBookUseCaseParams, Book>;
 
 export type RemoveBookUseCaseParams = { bookId: string };
 export type IRemoveBookUseCase = IUseCase<RemoveBookUseCaseParams, Book>;
+
+export type GetAllBorrowingsUseCaseParams = { bookId?: string };
+export type IGetAllBorrowingsUseCase = IUseCase<GetAllBorrowingsUseCaseParams | void, Borrowing[]>;

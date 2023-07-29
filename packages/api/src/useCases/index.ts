@@ -6,6 +6,7 @@ import { CheckInBookUseCase } from "./CheckInBook";
 import { CheckoutBookUseCase } from "./CheckoutBook";
 import { GetAllBooksUseCase } from "./GetAllBooks";
 import { RemoveBookUseCase } from "./RemoveBook";
+import { GetAllBorrowingsUseCase } from "./borrowings/GetAllBorrowingsUseCase";
 
 const booksRepo = new InMemoryBooksRepo();
 const membersRepo = new InMemoryMembersRepo();
@@ -16,3 +17,5 @@ export const checkoutBookUseCase = new CheckoutBookUseCase(booksRepo, membersRep
 export const checkInBookUseCase = new CheckInBookUseCase(booksRepo, borrowingsRepo);
 export const addBookUseCase = new AddBookUseCase(booksRepo);
 export const removeBookUseCase = new RemoveBookUseCase(booksRepo);
+
+export const getAllBorrowingsUseCase = new GetAllBorrowingsUseCase(borrowingsRepo);
