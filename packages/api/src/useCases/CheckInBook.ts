@@ -1,21 +1,19 @@
 import { Either, left, right } from "@sweet-monads/either";
+import { CheckInBookUseCaseParams, ICheckInBookUseCase } from "../domain";
 import { Book } from "../domain/entities/Book";
 import { IBooksRepo } from "../domain/repos/IBooksRepo";
 import { IBorrowingsRepo } from "../domain/repos/IBorrowingsRepo";
-import { BaseUseCase } from "../shared/application/BaseUseCase";
 
-class CheckInBookUseCase extends BaseUseCase {
+class CheckInBookUseCase implements ICheckInBookUseCase {
   private booksRepo: IBooksRepo;
   private borrowingsRepo: IBorrowingsRepo;
 
   constructor(booksRepo: IBooksRepo, borrowingsRepo: IBorrowingsRepo) {
-    super();
-
     this.booksRepo = booksRepo;
     this.borrowingsRepo = borrowingsRepo;
   }
 
-  async execute(bookId: string, memberId: string): Promise<Either<Error, Book>> {
+  async execute({ bookId, memberId }: CheckInBookUseCaseParams): Promise<Either<Error, Book>> {
     const borrowingOrError = await this.borrowingsRepo.findByBookAndMember(bookId, memberId);
 
     if (borrowingOrError.isLeft()) {

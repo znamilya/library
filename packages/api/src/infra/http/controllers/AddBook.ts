@@ -1,5 +1,5 @@
-import { IAddBookUseCase } from "@/useCases/IAddBook";
 import { Request, Response } from "express";
+import { IAddBookUseCase } from "../../../domain";
 import { BooksMapper } from "../../../mappers/Books";
 import { BaseController } from "../../../shared";
 

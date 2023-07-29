@@ -1,12 +1,12 @@
-import { GetAllBooksUseCase } from "@/useCases/GetAllBooks";
 import { Request, Response } from "express";
+import { IGetAllBooksUseCase } from "../../../domain";
 import { BooksMapper } from "../../../mappers/Books";
 import { BaseController } from "../../../shared";
 
 class GetAllBooksController extends BaseController {
-  useCase: GetAllBooksUseCase;
+  useCase: IGetAllBooksUseCase;
 
-  constructor(useCase: GetAllBooksUseCase) {
+  constructor(useCase: IGetAllBooksUseCase) {
     super();
 
     this.useCase = useCase;

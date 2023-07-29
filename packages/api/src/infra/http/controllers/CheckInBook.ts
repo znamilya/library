@@ -1,12 +1,12 @@
-import { CheckInBookUseCase } from "../../../useCases/CheckInBook";
 import { Request, Response } from "express";
+import { ICheckInBookUseCase } from "../../../domain";
 import { BooksMapper } from "../../../mappers/Books";
 import { BaseController } from "../../../shared";
 
 class CheckInBookController extends BaseController {
-  useCase: CheckInBookUseCase;
+  useCase: ICheckInBookUseCase;
 
-  constructor(useCase: CheckInBookUseCase) {
+  constructor(useCase: ICheckInBookUseCase) {
     super();
 
     this.useCase = useCase;
@@ -14,7 +14,10 @@ class CheckInBookController extends BaseController {
 
   async executeImpl(req: Request, res: Response) {
     const body = req.body;
-    const book = await this.useCase.execute(body.bookId, body.memberId);
+    const book = await this.useCase.execute({
+      bookId: body.bookId,
+      memberId: body.memberId,
+    });
 
     if (book.isLeft()) {
       return res.status(500).send(book.value.message);

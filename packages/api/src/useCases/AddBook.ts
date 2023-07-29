@@ -1,8 +1,8 @@
 import { left, right } from "@sweet-monads/either";
+import { IAddBookUseCase } from "../domain";
 import { Book } from "../domain/entities/Book";
 import { NewBookDto } from "../dtos/Book";
 import { InMemoryBooksRepo } from "../infra/repos/InMemoryBooksRepo";
-import { IAddBookUseCase } from "./IAddBook";
 
 class AddBookUseCase implements IAddBookUseCase {
   private booksRepo: InMemoryBooksRepo;
@@ -11,11 +11,11 @@ class AddBookUseCase implements IAddBookUseCase {
     this.booksRepo = booksRepo;
   }
 
-  async execute(bookDtp: NewBookDto) {
+  async execute(bookDto: NewBookDto) {
     const bookOrError = Book.create({
-      title: bookDtp.title,
-      author: bookDtp.author,
-      isbn: bookDtp.isbn,
+      title: bookDto.title,
+      author: bookDto.author,
+      isbn: bookDto.isbn,
       borrowingIds: [],
     });
 
