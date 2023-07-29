@@ -52,6 +52,8 @@ class CheckoutBookUseCase implements ICheckOutBookUseCase {
       checkInDate: null,
     });
 
+    console.log(borrowing);
+
     const saveBorrowingResult = await this.borrowingsRepo.save(borrowing);
 
     if (saveBorrowingResult.isLeft()) {

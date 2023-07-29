@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IGetAllBooksUseCase } from "../../../domain";
-import { BooksMapper } from "../../../mappers/Books";
-import { BaseController } from "../../../shared";
+import { IGetAllBooksUseCase } from "../../../../domain";
+import { BooksMapper } from "../../../../mappers/Books";
+import { BaseController } from "../../../../shared";
 
 class GetAllBooksController extends BaseController {
   useCase: IGetAllBooksUseCase;

@@ -4,7 +4,7 @@ import {
   checkoutBookUseCase,
   getAllBooksUseCase,
   removeBookUseCase,
-} from "../../../useCases";
+} from "../../../../useCases";
 import { AddBookController } from "./AddBook";
 import { CheckInBookController } from "./CheckInBook";
 import { CheckoutBookController } from "./CheckoutBook";

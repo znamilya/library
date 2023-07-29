@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { ICheckOutBookUseCase } from "../../../domain";
-import { BooksMapper } from "../../../mappers/Books";
-import { BaseController } from "../../../shared";
+import { ICheckInBookUseCase } from "../../../../domain";
+import { BooksMapper } from "../../../../mappers/Books";
+import { BaseController } from "../../../../shared";
 
-class CheckoutBookController extends BaseController {
-  useCase: ICheckOutBookUseCase;
+class CheckInBookController extends BaseController {
+  useCase: ICheckInBookUseCase;
 
-  constructor(useCase: ICheckOutBookUseCase) {
+  constructor(useCase: ICheckInBookUseCase) {
     super();
 
     this.useCase = useCase;
@@ -27,4 +27,4 @@ class CheckoutBookController extends BaseController {
   }
 }
 
-export { CheckoutBookController };
+export { CheckInBookController };

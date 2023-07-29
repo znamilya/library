@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IAddBookUseCase } from "../../../domain";
-import { BooksMapper } from "../../../mappers/Books";
-import { BaseController } from "../../../shared";
+import { IAddBookUseCase } from "../../../../domain";
+import { BooksMapper } from "../../../../mappers/Books";
+import { BaseController } from "../../../../shared";
 
 class AddBookController extends BaseController {
   useCase: IAddBookUseCase;

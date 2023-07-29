@@ -1,8 +1,8 @@
 import express from "express";
-import { booksRouter } from "./infra/http/router";
+import { router } from "./infra/http/router";
 
 const v1Router = express.Router();
 
-v1Router.use("/books", booksRouter);
+v1Router.use("/v1", router);
 
 export { v1Router };

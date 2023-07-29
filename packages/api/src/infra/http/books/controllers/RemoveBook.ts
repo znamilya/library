@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IRemoveBookUseCase } from "../../../domain";
-import { BooksMapper } from "../../../mappers/Books";
-import { BaseController } from "../../../shared";
+import { IRemoveBookUseCase } from "../../../../domain";
+import { BooksMapper } from "../../../../mappers/Books";
+import { BaseController } from "../../../../shared";
 
 class RemoveBookController extends BaseController {
   useCase: IRemoveBookUseCase;

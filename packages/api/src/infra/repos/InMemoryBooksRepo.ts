@@ -5,7 +5,7 @@ import { BooksMapper } from "../../mappers/Books";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const books: BookPersistence[] = [
+const defaultTBooks: BookPersistence[] = [
   {
     id: "1",
     title: "The Lord of the Rings",
@@ -46,7 +46,7 @@ const books: BookPersistence[] = [
 class InMemoryBooksRepo implements IBooksRepo {
   books: BookPersistence[] = [];
 
-  constructor(initialBooks: BookPersistence[] = []) {
+  constructor(initialBooks: BookPersistence[] = defaultTBooks) {
     this.books = initialBooks;
   }
 
@@ -92,7 +92,7 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   private async findBy(predicate: (book: BookPersistence) => boolean) {
-    return books.find((book) => predicate(book));
+    return this.books.find((book) => predicate(book));
   }
 
   async removeById(bookId: string) {
@@ -115,6 +115,18 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   async save(newBook: Book) {
+    const index = this.books.findIndex((b) => b.id === newBook.id);
+
+    if (index === -1) {
+      this.books.push(BooksMapper.entityToPersistence(newBook));
+    } else {
+      this.books[index] = BooksMapper.entityToPersistence(newBook);
+    }
+
+    return right(true);
+  }
+
+  async create(newBook: Book) {
     const existingBook = await this.findBy((book) => book.isbn === newBook.isbn);
 
     if (existingBook) {
