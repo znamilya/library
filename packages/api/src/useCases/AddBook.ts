@@ -2,14 +2,12 @@ import { left, right } from "@sweet-monads/either";
 import { Book } from "../domain/entities/Book";
 import { NewBookDto } from "../dtos/Book";
 import { InMemoryBooksRepo } from "../infra/repos/InMemoryBooksRepo";
-import { BaseUseCase } from "../shared/application/BaseUseCase";
+import { IAddBookUseCase } from "./IAddBook";
 
-class AddBookUseCase extends BaseUseCase {
+class AddBookUseCase implements IAddBookUseCase {
   private booksRepo: InMemoryBooksRepo;
 
   constructor(booksRepo: InMemoryBooksRepo) {
-    super();
-
     this.booksRepo = booksRepo;
   }
 

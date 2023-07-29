@@ -44,8 +44,14 @@ const books: BookPersistence[] = [
 ];
 
 class InMemoryBooksRepo implements IBooksRepo {
+  books: BookPersistence[] = [];
+
+  constructor(initialBooks: BookPersistence[] = []) {
+    this.books = initialBooks;
+  }
+
   async findAll() {
-    const booksEntityOrError = books.map(BooksMapper.persistenceToEntity);
+    const booksEntityOrError = this.books.map(BooksMapper.persistenceToEntity);
     const x = mergeInOne(booksEntityOrError);
 
     if (x.isLeft()) {
@@ -56,7 +62,7 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   async findByTitle(title: string) {
-    const booksEntityOrError = books
+    const booksEntityOrError = this.books
       .filter((book) => book.title.toLowerCase().includes(title.toLowerCase()))
       .map(BooksMapper.persistenceToEntity);
 
@@ -70,7 +76,7 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   async findById(bookId: string) {
-    const book = books.find((book) => book.id === bookId);
+    const book = this.books.find((book) => book.id === bookId);
 
     if (!book) {
       return left(new Error("Book not found"));
@@ -90,14 +96,14 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   async removeById(bookId: string) {
-    const index = books.findIndex((book) => book.id === bookId);
-    const book = books[index];
+    const index = this.books.findIndex((book) => book.id === bookId);
+    const book = this.books[index];
 
     if (!book) {
       return left(new Error("Book not found"));
     }
 
-    books.splice(index, 1);
+    this.books.splice(index, 1);
 
     const bookEntityOrError = BooksMapper.persistenceToEntity(book);
 
@@ -115,12 +121,12 @@ class InMemoryBooksRepo implements IBooksRepo {
       return left(new Error(`Book with ISBN ${newBook.isbn} already exists`));
     }
 
-    const index = books.findIndex((b) => b.id === newBook.id);
+    const index = this.books.findIndex((b) => b.id === newBook.id);
 
     if (index === -1) {
-      books.push(BooksMapper.entityToPersistence(newBook));
+      this.books.push(BooksMapper.entityToPersistence(newBook));
     } else {
-      books[index] = BooksMapper.entityToPersistence(newBook);
+      this.books[index] = BooksMapper.entityToPersistence(newBook);
     }
 
     return right(true);
