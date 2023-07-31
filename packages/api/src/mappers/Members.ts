@@ -12,7 +12,7 @@ class MembersMapper {
   }
 
   static persistenceToEntity(memberPersistence: MemberPersistence): Member {
-    return Member.create(
+    const memberOrError = Member.create(
       {
         name: memberPersistence.name,
         isBlocked: memberPersistence.isBlocked,
@@ -20,6 +20,8 @@ class MembersMapper {
       },
       memberPersistence.id,
     );
+
+    return memberOrError as Member;
   }
 
   static entityToDto(member: Member): any {

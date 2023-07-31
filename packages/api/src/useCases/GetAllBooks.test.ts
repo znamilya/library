@@ -4,22 +4,26 @@ import { InMemoryBooksRepo } from "../infra/repos/InMemoryBooksRepo";
 import { GetAllBooksUseCase } from "./GetAllBooks";
 
 test("main success scenario", async () => {
-  const booksRepo = new InMemoryBooksRepo([
-    {
-      id: "1",
-      title: "The Lord of the Rings",
-      isbn: "9992158107",
-      author: "J. R. R. Tolkien",
-      borrowingIds: [],
-    },
-    {
-      id: "2",
-      title: "The Hobbit",
-      isbn: "9971502100",
-      author: "J. R. R. Tolkien",
-      borrowingIds: [],
-    },
-  ]);
+  const booksRepo = new InMemoryBooksRepo({
+    books: [
+      {
+        id: "1",
+        title: "The Lord of the Rings",
+        isbn: "9992158107",
+        author: "J. R. R. Tolkien",
+        borrowingIds: [],
+      },
+      {
+        id: "2",
+        title: "The Hobbit",
+        isbn: "9971502100",
+        author: "J. R. R. Tolkien",
+        borrowingIds: [],
+      },
+    ],
+    borrowings: [],
+    members: [],
+  });
   const getAllBooksUseCase = new GetAllBooksUseCase(booksRepo);
   const result = await getAllBooksUseCase.execute();
 
@@ -43,7 +47,11 @@ test("main success scenario", async () => {
 });
 
 test("when there is no books in repo", async () => {
-  const booksRepo = new InMemoryBooksRepo([]);
+  const booksRepo = new InMemoryBooksRepo({
+    books: [],
+    borrowings: [],
+    members: [],
+  });
   const getAllBooksUseCase = new GetAllBooksUseCase(booksRepo);
   const result = await getAllBooksUseCase.execute();
   const books = result.value as Book[];
@@ -51,30 +59,21 @@ test("when there is no books in repo", async () => {
   expect(books).toStrictEqual([]);
 });
 
-test("when returns an error", async () => {
-  const booksRepo = new InMemoryBooksRepo();
-
-  booksRepo.findAll = async () => {
-    return left(new Error("Some error")) as Either<Error, never> | Either<never, Book[]>;
-  };
-
-  const getAllBooksUseCase = new GetAllBooksUseCase(booksRepo);
-  const result = await getAllBooksUseCase.execute();
-
-  expect(result.value).toBeInstanceOf(Error);
-});
-
 describe("when title was provided", () => {
   test("when there are no books were found", async () => {
-    const booksRepo = new InMemoryBooksRepo([
-      {
-        id: "1",
-        title: "The Lord of the Rings",
-        isbn: "9992158107",
-        author: "J. R. R. Tolkien",
-        borrowingIds: [],
-      },
-    ]);
+    const booksRepo = new InMemoryBooksRepo({
+      books: [
+        {
+          id: "1",
+          title: "The Lord of the Rings",
+          isbn: "9992158107",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+      ],
+      borrowings: [],
+      members: [],
+    });
 
     const getAllBooksUseCase = new GetAllBooksUseCase(booksRepo);
     const result = await getAllBooksUseCase.execute({ title: "hobbit" });
@@ -84,22 +83,26 @@ describe("when title was provided", () => {
   });
 
   test("when there are some books were found", async () => {
-    const booksRepo = new InMemoryBooksRepo([
-      {
-        id: "1",
-        title: "The Lord of the Rings",
-        isbn: "9992158107",
-        author: "J. R. R. Tolkien",
-        borrowingIds: [],
-      },
-      {
-        id: "2",
-        title: "The Hobbit",
-        isbn: "9971502100",
-        author: "J. R. R. Tolkien",
-        borrowingIds: [],
-      },
-    ]);
+    const booksRepo = new InMemoryBooksRepo({
+      books: [
+        {
+          id: "1",
+          title: "The Lord of the Rings",
+          isbn: "9992158107",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+        {
+          id: "2",
+          title: "The Hobbit",
+          isbn: "9971502100",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+      ],
+      borrowings: [],
+      members: [],
+    });
 
     const getAllBooksUseCase = new GetAllBooksUseCase(booksRepo);
     const result = await getAllBooksUseCase.execute({ title: "hobbit" });

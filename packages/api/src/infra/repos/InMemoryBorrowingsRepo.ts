@@ -1,27 +1,37 @@
 import { left, right } from "@sweet-monads/either";
 import { Borrowing } from "../../domain/entities/Borrowing";
-import { BorrowingPersistence, IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
+import { BookPersistence } from "../../domain/repos/IBooksRepo";
+import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { BorrowingsMapper } from "../../mappers/Borrowings";
+import { DbContext } from "./InMemory/types";
 
 class InMemoryBorrowingsRepo implements IBorrowingsRepo {
-  borrowings: BorrowingPersistence[];
-
-  constructor(initialBooks: BorrowingPersistence[] = []) {
-    this.borrowings = initialBooks;
-  }
+  constructor(private dbContext: DbContext) {}
 
   async findAll() {
-    return right(this.borrowings.map(BorrowingsMapper.persistenceToEntity));
+    const { books, borrowings } = this.dbContext;
+    const finalBorrowings = borrowings.map((borrowing) => ({
+      ...borrowing,
+      book: books.find((book) => book.id === borrowing.book.id) as BookPersistence,
+    }));
+
+    return right(finalBorrowings.map(BorrowingsMapper.persistenceToEntity));
   }
 
   async findByBookId(bookId: string) {
-    const borrowings = this.borrowings.filter((borrowing) => borrowing.bookId === bookId);
+    const { books, borrowings } = this.dbContext;
+    const finalBorrowings = borrowings
+      .filter((borrowing) => borrowing.book.id === bookId)
+      .map((borrowing) => ({
+        ...borrowing,
+        book: books.find((book) => book.id === borrowing.book.id) as BookPersistence,
+      }));
 
-    return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    return right(finalBorrowings.map(BorrowingsMapper.persistenceToEntity));
   }
 
   async findById(id: string) {
-    const borrowing = this.borrowings.find((borrowing) => borrowing.id === id);
+    const borrowing = this.dbContext.borrowings.find((borrowing) => borrowing.id === id);
 
     if (!borrowing) {
       return left(new Error("borrowing not found"));
@@ -31,8 +41,8 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
   }
 
   async findByBookAndMember(bookId: string, memberId: string) {
-    const borrowing = this.borrowings.find(
-      (borrowing) => borrowing.bookId === bookId && borrowing.memberId === memberId,
+    const borrowing = this.dbContext.borrowings.find(
+      (borrowing) => borrowing.book.id === bookId && borrowing.memberId === memberId,
     );
 
     if (!borrowing) {
@@ -43,12 +53,12 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
   }
 
   async save(borrowing: Borrowing) {
-    const index = this.borrowings.findIndex((b) => b.id === borrowing.id);
+    const index = this.dbContext.borrowings.findIndex((b) => b.id === borrowing.id);
 
     if (index === -1) {
-      this.borrowings.push(BorrowingsMapper.entityToPersistence(borrowing));
+      this.dbContext.borrowings.push(BorrowingsMapper.entityToPersistence(borrowing));
     } else {
-      this.borrowings[index] = BorrowingsMapper.entityToPersistence(borrowing);
+      this.dbContext.borrowings[index] = BorrowingsMapper.entityToPersistence(borrowing);
     }
 
     return right(true);

@@ -45,7 +45,7 @@ class CheckoutBookUseCase implements ICheckOutBookUseCase {
     }
 
     const borrowing = Borrowing.create({
-      bookId: book.id,
+      book,
       memberId: member.id,
       checkOutDate: new Date(),
       dueDate: new Date(),

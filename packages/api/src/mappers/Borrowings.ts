@@ -1,11 +1,13 @@
+import { left } from "@sweet-monads/either";
 import { Borrowing } from "../domain/entities/Borrowing/Borrowing";
 import { BorrowingPersistence } from "../domain/repos/IBorrowingsRepo";
+import { BooksMapper } from "./Books";
 
 class BorrowingsMapper {
   static entityToPersistence(borrowing: Borrowing): BorrowingPersistence {
     return {
       id: borrowing.id,
-      bookId: borrowing.bookId,
+      book: BooksMapper.entityToPersistence(borrowing.book),
       memberId: borrowing.memberId,
       checkOutDate: borrowing.checkOutDate,
       dueDate: borrowing.dueDate,
@@ -13,23 +15,27 @@ class BorrowingsMapper {
     };
   }
 
-  static persistenceToEntity(borrowingPersistence: BorrowingPersistence): Borrowing {
-    return Borrowing.create(
+  static persistenceToEntity(borrowing: BorrowingPersistence): Borrowing {
+    const book = BooksMapper.persistenceToEntity(borrowing.book);
+
+    const borrowingOrError = Borrowing.create(
       {
-        bookId: borrowingPersistence.bookId,
-        memberId: borrowingPersistence.memberId,
-        checkOutDate: borrowingPersistence.checkOutDate,
-        dueDate: borrowingPersistence.dueDate,
-        checkInDate: borrowingPersistence.checkInDate,
+        book,
+        memberId: borrowing.memberId,
+        checkOutDate: borrowing.checkOutDate,
+        dueDate: borrowing.dueDate,
+        checkInDate: borrowing.checkInDate,
       },
-      borrowingPersistence.id,
+      borrowing.id,
     );
+
+    return borrowingOrError as Borrowing;
   }
 
   static entityToDto(borrowing: Borrowing): any {
     return {
       id: borrowing.id,
-      bookId: borrowing.bookId,
+      book: BooksMapper.entityToDto(borrowing.book),
       memberId: borrowing.memberId,
       checkOutDate: borrowing.checkOutDate,
       dueDate: borrowing.dueDate,

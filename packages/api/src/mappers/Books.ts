@@ -1,6 +1,5 @@
-import { BookPersistence } from "../domain/repos/IBooksRepo";
 import { Book } from "../domain/entities/Book/Book";
-import { Either } from "@sweet-monads/either";
+import { BookPersistence } from "../domain/repos/IBooksRepo";
 
 class BooksMapper {
   static entityToPersistence(book: Book): BookPersistence {
@@ -13,8 +12,8 @@ class BooksMapper {
     };
   }
 
-  static persistenceToEntity(bookPersistence: BookPersistence): Either<Error, Book> {
-    return Book.create(
+  static persistenceToEntity(bookPersistence: BookPersistence): Book {
+    const book = Book.create(
       {
         title: bookPersistence.title,
         author: bookPersistence.author,
@@ -23,6 +22,8 @@ class BooksMapper {
       },
       bookPersistence.id,
     );
+
+    return book.value as Book;
   }
 
   static entityToDto(book: Book): any {

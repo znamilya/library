@@ -1,9 +1,10 @@
 import { Either } from "@sweet-monads/either";
 import { Borrowing } from "../entities/Borrowing/Borrowing";
+import { BookPersistence } from "./IBooksRepo";
 
 export type BorrowingPersistence = {
   id: string;
-  bookId: string;
+  book: BookPersistence;
   memberId: string;
   checkOutDate: Date;
   dueDate: Date;

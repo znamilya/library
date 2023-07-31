@@ -25,7 +25,7 @@ class CheckInBookUseCase implements ICheckInBookUseCase {
     borrowing.complete(new Date());
     this.borrowingsRepo.save(borrowing);
 
-    const bookOrError = await this.booksRepo.findById(borrowing.bookId);
+    const bookOrError = await this.booksRepo.findById(borrowing.book.id);
 
     if (bookOrError.isLeft()) {
       return left(new Error(`Book can't be checked in. ${bookOrError.value}`));

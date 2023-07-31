@@ -1,24 +1,20 @@
 import { left, right } from "@sweet-monads/either";
 import { Member } from "../../domain/entities/Member";
-import { IMembersRepo, MemberPersistence } from "../../domain/repos/IMembersRepo";
+import { IMembersRepo } from "../../domain/repos/IMembersRepo";
 import { MembersMapper } from "../../mappers/Members";
-
-const members: MemberPersistence[] = [
-  {
-    id: "10",
-    name: "John Doe",
-    isBlocked: false,
-    borrowingIds: [],
-  },
-];
+import { DbContext } from "./InMemory/types";
 
 class InMemoryMembersRepo implements IMembersRepo {
+  constructor(private dbContext: DbContext) {}
+
   async findAll() {
+    const { members } = this.dbContext;
+
     return right(members.map(MembersMapper.persistenceToEntity));
   }
 
   async findById(id: string) {
-    const member = members.find((member) => member.id === id);
+    const member = this.dbContext.members.find((member) => member.id === id);
 
     if (!member) {
       return left(new Error("member not found"));
@@ -28,12 +24,12 @@ class InMemoryMembersRepo implements IMembersRepo {
   }
 
   async save(member: Member) {
-    const index = members.findIndex((b) => b.id === member.id);
+    const index = this.dbContext.members.findIndex((b) => b.id === member.id);
 
     if (index === -1) {
-      members.push(MembersMapper.entityToPersistence(member));
+      this.dbContext.members.push(MembersMapper.entityToPersistence(member));
     } else {
-      members[index] = MembersMapper.entityToPersistence(member);
+      this.dbContext.members[index] = MembersMapper.entityToPersistence(member);
     }
 
     return right(true);

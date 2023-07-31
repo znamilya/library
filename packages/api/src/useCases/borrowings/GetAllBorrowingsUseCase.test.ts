@@ -3,16 +3,34 @@ import { InMemoryBorrowingsRepo } from "../../infra/repos/InMemoryBorrowingsRepo
 import { GetAllBorrowingsUseCase } from "./GetAllBorrowingsUseCase";
 
 test("main success scenario", async () => {
-  const borrowingsRepo = new InMemoryBorrowingsRepo([
-    {
-      id: "1",
-      bookId: "1",
-      memberId: "1",
-      checkOutDate: new Date("2021-01-01"),
-      dueDate: new Date("2021-01-08"),
-      checkInDate: new Date("2021-01-07"),
-    },
-  ]);
+  const borrowingsRepo = new InMemoryBorrowingsRepo({
+    borrowings: [
+      {
+        id: "1",
+        book: {
+          id: "123",
+          title: "The Lord of the Rings",
+          isbn: "9992158107",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+        memberId: "1",
+        checkOutDate: new Date("2021-01-01"),
+        dueDate: new Date("2021-01-08"),
+        checkInDate: new Date("2021-01-07"),
+      },
+    ],
+    books: [
+      {
+        id: "123",
+        title: "The Lord of the Rings",
+        isbn: "9992158107",
+        author: "J. R. R. Tolkien",
+        borrowingIds: [],
+      },
+    ],
+    members: [],
+  });
 
   const getAllBorrowingsUseCase = new GetAllBorrowingsUseCase(borrowingsRepo);
   const result = await getAllBorrowingsUseCase.execute();
@@ -22,7 +40,7 @@ test("main success scenario", async () => {
 
   expect(borrowings).toHaveLength(1);
   expect(borrowings[0].id).toBe("1");
-  expect(borrowings[0].bookId).toBe("1");
+  expect(borrowings[0].book.id).toBe("123");
   expect(borrowings[0].memberId).toBe("1");
   expect(borrowings[0].checkOutDate).toStrictEqual(new Date("2021-01-01"));
   expect(borrowings[0].dueDate).toStrictEqual(new Date("2021-01-08"));
@@ -30,7 +48,11 @@ test("main success scenario", async () => {
 });
 
 test("when there are no borrowings", async () => {
-  const borrowingsRepo = new InMemoryBorrowingsRepo([]);
+  const borrowingsRepo = new InMemoryBorrowingsRepo({
+    books: [],
+    borrowings: [],
+    members: [],
+  });
   const getAllBorrowingsUseCase = new GetAllBorrowingsUseCase(borrowingsRepo);
 
   const result = await getAllBorrowingsUseCase.execute();
@@ -40,38 +62,82 @@ test("when there are no borrowings", async () => {
 });
 
 test("when search by bookId", async () => {
-  const borrowingsRepo = new InMemoryBorrowingsRepo([
-    {
-      id: "1",
-      bookId: "1",
-      memberId: "1",
-      checkOutDate: new Date("2021-01-01"),
-      dueDate: new Date("2021-01-08"),
-      checkInDate: new Date("2021-01-07"),
-    },
-    {
-      id: "2",
-      bookId: "2",
-      memberId: "1",
-      checkOutDate: new Date("2021-01-01"),
-      dueDate: new Date("2021-01-08"),
-      checkInDate: new Date("2021-01-07"),
-    },
-    {
-      id: "3",
-      bookId: "2",
-      memberId: "2",
-      checkOutDate: new Date("2021-01-01"),
-      dueDate: new Date("2021-01-08"),
-      checkInDate: new Date("2021-01-07"),
-    },
-  ]);
+  const borrowingsRepo = new InMemoryBorrowingsRepo({
+    borrowings: [
+      {
+        id: "1",
+        book: {
+          id: "12",
+          title: "The Lord of the Rings",
+          isbn: "9992158107",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+        memberId: "1",
+        checkOutDate: new Date("2021-01-01"),
+        dueDate: new Date("2021-01-08"),
+        checkInDate: new Date("2021-01-07"),
+      },
+      {
+        id: "2",
+        book: {
+          id: "12",
+          title: "The Lord of the Rings",
+          isbn: "9992158107",
+          author: "J. R. R. Tolkien",
+          borrowingIds: [],
+        },
+        memberId: "1",
+        checkOutDate: new Date("2021-01-01"),
+        dueDate: new Date("2021-01-08"),
+        checkInDate: new Date("2021-01-07"),
+      },
+      {
+        id: "3",
+        book: {
+          id: "13",
+          title: "Harry Potter and the Philosopher's Stone",
+          isbn: "9604250590",
+          author: "J. K. Rowling",
+          borrowingIds: [],
+        },
+        memberId: "2",
+        checkOutDate: new Date("2021-01-01"),
+        dueDate: new Date("2021-01-08"),
+        checkInDate: new Date("2021-01-07"),
+      },
+    ],
+    books: [
+      {
+        id: "12",
+        title: "The Lord of the Rings",
+        isbn: "9992158107",
+        author: "J. R. R. Tolkien",
+        borrowingIds: [],
+      },
+      {
+        id: "12",
+        title: "The Lord of the Rings",
+        isbn: "9992158107",
+        author: "J. R. R. Tolkien",
+        borrowingIds: [],
+      },
+      {
+        id: "13",
+        title: "Harry Potter and the Philosopher's Stone",
+        isbn: "9604250590",
+        author: "J. K. Rowling",
+        borrowingIds: [],
+      },
+    ],
+    members: [],
+  });
 
   const getAllBorrowingsUseCase = new GetAllBorrowingsUseCase(borrowingsRepo);
-  const result = await getAllBorrowingsUseCase.execute({ bookId: "2" });
+  const result = await getAllBorrowingsUseCase.execute({ bookId: "12" });
   const borrowings = result.value as Borrowing[];
 
   expect(borrowings).toHaveLength(2);
-  expect(borrowings[0].id).toBe("2");
-  expect(borrowings[1].id).toBe("3");
+  expect(borrowings[0].id).toBe("1");
+  expect(borrowings[1].id).toBe("2");
 });

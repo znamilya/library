@@ -1,7 +1,8 @@
 import { Entity } from "../../../shared";
+import { Book } from "../Book";
 
 type BorrowingProps = {
-  bookId: string;
+  book: Book;
   memberId: string;
   checkOutDate: Date;
   dueDate: Date;
@@ -9,8 +10,8 @@ type BorrowingProps = {
 };
 
 class Borrowing extends Entity<BorrowingProps> {
-  get bookId() {
-    return this.props.bookId;
+  get book() {
+    return this.props.book;
   }
 
   get memberId() {
