@@ -1,0 +1,55 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Book {
+  id         String      @id @default(uuid())
+  title      String      @db.VarChar(100)
+  author     String      @db.VarChar(50)
+  isbn       String      @unique
+  isRemoved  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime?   @updatedAt
+  borrowings Borrowing[]
+
+  @@map("books")
+}
+
+model Member {
+  id         String      @id @default(uuid())
+  name       String      @db.VarChar(50)
+  email      String      @unique
+  status     UserStatus  @default(ACTIVE)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime?   @updatedAt
+  borrowings Borrowing[]
+
+  @@map("members")
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  REMOVED
+}
+
+model Borrowing {
+  id           String    @id @default(uuid())
+  bookId       String
+  book         Book      @relation(fields: [bookId], references: [id])
+  memberId     String
+  member       Member    @relation(fields: [memberId], references: [id])
+  checkOutDate DateTime  @default(now())
+  dueDate      DateTime
+  checkInDate  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+
+  @@unique([bookId, memberId])
+  @@map("borrowings")
+}

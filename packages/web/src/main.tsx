@@ -12,16 +12,16 @@ const queryClient = new QueryClient();
 const theme = createTheme({
   typography: {
     h1: {
-      fontSize: "5.653rem",
+      fontSize: "2.653rem",
     },
     h2: {
-      fontSize: "3.998rem",
+      fontSize: "1.998rem",
     },
     h3: {
-      fontSize: "2.827rem",
+      fontSize: "1.327rem",
     },
     h4: {
-      fontSize: "1.999rem",
+      fontSize: "0.999rem",
     },
   },
 });

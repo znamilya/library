@@ -4,7 +4,7 @@ import { BookPersistence } from "./IBooksRepo";
 
 export type BorrowingPersistence = {
   id: string;
-  book: BookPersistence;
+  bookId: string;
   memberId: string;
   checkOutDate: Date;
   dueDate: Date;

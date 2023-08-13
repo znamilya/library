@@ -1,4 +1,4 @@
-import { BooksNotFoundTestIds } from "../../../src/modules/books/ui/components/BooksNotFound/BooksNotFound.testIds";
+import { BooksNotFoundTestIds } from "../../../src/modules/books/useCases/viewAllBooks/components/BooksNotFound/BooksNotFound.testIds";
 import { BaseComponent } from "./BaseComponent";
 
 class BooksNotFound extends BaseComponent {

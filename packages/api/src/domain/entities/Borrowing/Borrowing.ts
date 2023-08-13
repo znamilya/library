@@ -1,8 +1,7 @@
 import { Entity } from "../../../shared";
-import { Book } from "../Book";
 
 type BorrowingProps = {
-  book: Book;
+  bookId: string;
   memberId: string;
   checkOutDate: Date;
   dueDate: Date;
@@ -10,8 +9,8 @@ type BorrowingProps = {
 };
 
 class Borrowing extends Entity<BorrowingProps> {
-  get book() {
-    return this.props.book;
+  get bookId() {
+    return this.props.bookId;
   }
 
   get memberId() {
@@ -32,6 +31,17 @@ class Borrowing extends Entity<BorrowingProps> {
 
   complete(checkInDate: Date) {
     this.props.checkInDate = checkInDate;
+  }
+
+  toJson() {
+    return {
+      id: this.id,
+      book: this.bookId,
+      memberId: this.memberId,
+      checkOutDate: this.checkOutDate,
+      dueDate: this.dueDate,
+      checkInDate: this.checkInDate,
+    };
   }
 
   static create(props: BorrowingProps, id?: string) {

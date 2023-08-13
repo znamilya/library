@@ -1,26 +1,21 @@
 import { useParams } from "react-router";
 
-import {
-  AddBorrowerFragment,
-  BookBorrowingHistoryFragment,
-  BookDetailsFragment,
-  BookId,
-  RemoveBookFragment,
-  RemoveBorrowerFragment,
-} from "@/modules/books";
+import { BookId } from "@/modules/books";
+import { useRQFindBookById } from "@/modules/books/repos/reactQuery";
+import { ViewBookDetailsUseCase } from "@/modules/books/useCases";
 
 export const BookDetailsPage = () => {
   const { bookId } = useParams();
 
   return (
     <div>
-      <BookDetailsFragment bookId={bookId as BookId} />
+      <ViewBookDetailsUseCase bookId={bookId as BookId} useFindBookById={useRQFindBookById} />
 
-      <RemoveBookFragment />
+      {/* <RemoveBookFragment />
       <AddBorrowerFragment />
       <RemoveBorrowerFragment />
 
-      <BookBorrowingHistoryFragment />
+      <BookBorrowingHistoryFragment /> */}
     </div>
   );
 };

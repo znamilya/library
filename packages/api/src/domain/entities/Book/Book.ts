@@ -7,14 +7,14 @@ type CreateBookProps = {
   title: string;
   isbn: string;
   author: string;
-  borrowingIds: string[];
+  isRemoved?: boolean;
 };
 
 type BookProps = {
   title: string;
   isbn: Isbn;
   author: string;
-  borrowingIds: string[];
+  isRemoved: boolean;
 };
 
 class Book extends Entity<BookProps> {
@@ -30,20 +30,17 @@ class Book extends Entity<BookProps> {
     return this.props.author;
   }
 
-  get borrowingIds() {
-    return this.props.borrowingIds;
+  get isRemoved() {
+    return this.props.isRemoved;
   }
 
-  checkOut(borrowingId: string) {
-    this.props.borrowingIds.push(borrowingId);
-  }
-
-  checkIn(borrowingId: string) {
-    this.props.borrowingIds = this.props.borrowingIds.filter((id) => id !== borrowingId);
-  }
-
-  isAvailable(): boolean {
-    return this.props.borrowingIds.length === 0;
+  toJson() {
+    return {
+      id: this.id,
+      title: this.title,
+      isbn: this.isbn,
+      author: this.author,
+    };
   }
 
   static create(props: CreateBookProps, id?: string) {
@@ -66,6 +63,7 @@ class Book extends Entity<BookProps> {
         {
           ...props,
           isbn: isbnOrError.value,
+          isRemoved: props.isRemoved ?? false,
         },
         id,
       ),

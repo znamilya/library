@@ -14,6 +14,7 @@ class CheckInBookController extends BaseController {
 
   async executeImpl(req: Request, res: Response) {
     const body = req.body;
+
     const book = await this.useCase.execute({
       bookId: body.bookId,
       memberId: body.memberId,

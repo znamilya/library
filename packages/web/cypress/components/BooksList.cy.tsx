@@ -1,8 +1,9 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { BrowserRouter } from "react-router-dom";
 
-import { Book, BooksList as BooksListComponent, makeBook } from "@/modules/books";
+import { Book, makeBook } from "@/modules/books";
 import { NonEmptyArray } from "@/modules/shared";
+import { BooksList as BooksListComponent } from "@/modules/books/useCases/viewAllBooks/components/BooksList";
 import { BooksList } from "../support/componentObjects";
 
 it("main success scenario", () => {

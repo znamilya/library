@@ -1,10 +1,8 @@
-import { left, mergeInOne, right } from "@sweet-monads/either";
+import { Either, left, right } from "@sweet-monads/either";
 import { Book } from "../../domain/entities/Book/Book";
 import { BookPersistence, IBooksRepo } from "../../domain/repos/IBooksRepo";
 import { BooksMapper } from "../../mappers/Books";
 import { DbContext } from "./InMemory/types";
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class InMemoryBooksRepo implements IBooksRepo {
   constructor(private dbContext: DbContext) {}
@@ -78,6 +76,10 @@ class InMemoryBooksRepo implements IBooksRepo {
     }
 
     return right(true);
+  }
+
+  update(book: Book): Promise<Either<Error, boolean>> {
+    throw new Error("Method not implemented.");
   }
 }
 

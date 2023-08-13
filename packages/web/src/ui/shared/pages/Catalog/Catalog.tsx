@@ -2,15 +2,24 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Suspense } from "react";
 
-import { AllBooksFragment, SearchBookFragment } from "@/modules/books";
+import { useRQFindAllBooks } from "@/modules/books/repos/reactQuery";
+import { AddBookButton } from "@/modules/books/ui/components/AddBookButton";
+import { AllBooksUseCase } from "@/modules/books/useCases";
+import { Stack } from "@mui/material";
 import { ErrorBoundary } from "react-error-boundary";
 
 export const CatalogPage = () => {
   return (
     <div>
-      <Typography variant="h1">Catalog</Typography>
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Typography variant="h1" flexGrow={1}>
+          Catalog
+        </Typography>
 
-      <SearchBookFragment />
+        <AddBookButton />
+      </Stack>
+
+      {/* <SearchBookFragment /> */}
 
       <Box mt={3}>
         <ErrorBoundary
@@ -25,7 +34,7 @@ export const CatalogPage = () => {
           }
         >
           <Suspense fallback="Loading books...">
-            <AllBooksFragment />
+            <AllBooksUseCase useFindAllBooks={useRQFindAllBooks} />
           </Suspense>
         </ErrorBoundary>
       </Box>

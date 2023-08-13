@@ -1,5 +1,3 @@
-// export * from "./addBorrower";
-export * from "./viewAllBooks/useViewAllBooks";
-export * from "./getBookById";
-// export * from "./removeBook";
-// export * from "./removeBorrower";
+export * from "./addBook";
+export * from "./viewAllBooks";
+export * from "./viewBookDetails";

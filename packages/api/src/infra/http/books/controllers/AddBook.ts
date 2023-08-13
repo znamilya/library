@@ -28,7 +28,9 @@ class AddBookController extends BaseController {
     });
 
     if (book.isLeft()) {
-      return res.status(500).send(book.value.message);
+      return res.status(500).send({
+        message: book.value.message,
+      });
     }
 
     res.json(BooksMapper.entityToDto(book.value));

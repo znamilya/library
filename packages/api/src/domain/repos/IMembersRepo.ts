@@ -5,7 +5,6 @@ export type MemberPersistence = {
   id: string;
   name: string;
   isBlocked: boolean;
-  borrowingIds: string[];
 };
 
 export type IMembersRepo = {

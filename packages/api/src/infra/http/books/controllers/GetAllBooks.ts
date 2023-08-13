@@ -3,6 +3,19 @@ import { IGetAllBooksUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
 import { BaseController } from "../../../../shared";
 
+type BorrowingDto = {
+  id: string;
+  memberId: string;
+};
+
+export type BookDto = {
+  id: string;
+  title: string;
+  isbn: string;
+  author: string;
+  borrowings: BorrowingDto[];
+};
+
 class GetAllBooksController extends BaseController {
   useCase: IGetAllBooksUseCase;
 

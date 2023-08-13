@@ -9,14 +9,14 @@ export type BookId = EntityId;
 export type Book = {
   id: BookId;
   title: string;
-  description: string;
   author: string;
   isbn: ISBN;
+  borrowings: string[];
 };
 
 // CHECKS
-// export const isBookBorrowed = (book: Book): book is Book & { BorrowedBy: Borrower } =>
-//   !!book.borrowedBy;
+export const isBookBorrowed = (book: Book): book is Book & { BorrowedBy: Borrower } =>
+  book.borrowings.length > 0;
 
 // export const isBookReserved = (book: Book): book is Book & { ReservedBy: Borrower } =>
 //   !!book.reservedBy;

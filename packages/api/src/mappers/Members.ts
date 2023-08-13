@@ -7,7 +7,6 @@ class MembersMapper {
       id: member.id,
       name: member.name,
       isBlocked: member.isBlocked,
-      borrowingIds: member.borrowingIds,
     };
   }
 
@@ -16,7 +15,6 @@ class MembersMapper {
       {
         name: memberPersistence.name,
         isBlocked: memberPersistence.isBlocked,
-        borrowingIds: memberPersistence.borrowingIds,
       },
       memberPersistence.id,
     );
@@ -29,7 +27,6 @@ class MembersMapper {
       id: member.id,
       name: member.name,
       isBlocked: member.isBlocked,
-      borrowingIds: member.borrowingIds,
     };
   }
 }

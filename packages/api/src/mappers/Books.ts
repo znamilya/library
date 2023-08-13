@@ -1,5 +1,6 @@
 import { Book } from "../domain/entities/Book/Book";
 import { BookPersistence } from "../domain/repos/IBooksRepo";
+import { BookDto } from "../dtos/Book";
 
 class BooksMapper {
   static entityToPersistence(book: Book): BookPersistence {
@@ -8,7 +9,7 @@ class BooksMapper {
       title: book.title,
       author: book.author,
       isbn: book.isbn,
-      borrowingIds: book.borrowingIds,
+      isRemoved: book.isRemoved,
     };
   }
 
@@ -18,7 +19,7 @@ class BooksMapper {
         title: bookPersistence.title,
         author: bookPersistence.author,
         isbn: bookPersistence.isbn,
-        borrowingIds: bookPersistence.borrowingIds,
+        isRemoved: bookPersistence.isRemoved,
       },
       bookPersistence.id,
     );
@@ -26,13 +27,12 @@ class BooksMapper {
     return book.value as Book;
   }
 
-  static entityToDto(book: Book): any {
+  static entityToDto(book: Book): BookDto {
     return {
       id: book.id,
       title: book.title,
       author: book.author,
       isbn: book.isbn,
-      borrowingIds: book.borrowingIds,
     };
   }
 }

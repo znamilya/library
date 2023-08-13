@@ -1,1 +1,3 @@
-export type UseCase<TParams extends any[], TResult> = (...params: TParams) => TResult;
+export type UseCase<TParams extends any[], TExecuteParams, TResult> = (...params: TParams) => {
+  execute: (params: TExecuteParams) => TResult;
+};

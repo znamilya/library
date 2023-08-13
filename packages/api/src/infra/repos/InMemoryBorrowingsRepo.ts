@@ -1,6 +1,5 @@
 import { left, right } from "@sweet-monads/either";
 import { Borrowing } from "../../domain/entities/Borrowing";
-import { BookPersistence } from "../../domain/repos/IBooksRepo";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { BorrowingsMapper } from "../../mappers/Borrowings";
 import { DbContext } from "./InMemory/types";
@@ -9,23 +8,14 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
   constructor(private dbContext: DbContext) {}
 
   async findAll() {
-    const { books, borrowings } = this.dbContext;
-    const finalBorrowings = borrowings.map((borrowing) => ({
-      ...borrowing,
-      book: books.find((book) => book.id === borrowing.book.id) as BookPersistence,
-    }));
+    const { borrowings } = this.dbContext;
 
-    return right(finalBorrowings.map(BorrowingsMapper.persistenceToEntity));
+    return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
   }
 
   async findByBookId(bookId: string) {
-    const { books, borrowings } = this.dbContext;
-    const finalBorrowings = borrowings
-      .filter((borrowing) => borrowing.book.id === bookId)
-      .map((borrowing) => ({
-        ...borrowing,
-        book: books.find((book) => book.id === borrowing.book.id) as BookPersistence,
-      }));
+    const { borrowings } = this.dbContext;
+    const finalBorrowings = borrowings.filter((borrowing) => borrowing.bookId === bookId);
 
     return right(finalBorrowings.map(BorrowingsMapper.persistenceToEntity));
   }
@@ -42,7 +32,7 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
 
   async findByBookAndMember(bookId: string, memberId: string) {
     const borrowing = this.dbContext.borrowings.find(
-      (borrowing) => borrowing.book.id === bookId && borrowing.memberId === memberId,
+      (borrowing) => borrowing.bookId === bookId && borrowing.memberId === memberId,
     );
 
     if (!borrowing) {
