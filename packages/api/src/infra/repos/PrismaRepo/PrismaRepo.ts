@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { EntityAlreadyExistsException } from "../../../shared/exceptions/repoExceptions/EntityAlreadyExistsException";
+import { EntityNotFoundException } from "../../../shared/exceptions/repoExceptions/EntityNotFoundException";
 
 abstract class PrismaRepo {
   protected prisma: PrismaClient;
@@ -7,17 +9,21 @@ abstract class PrismaRepo {
     this.prisma = new PrismaClient();
   }
 
-  handleError(error: unknown) {
+  handleError(error: unknown): Error {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
         const target = error.meta?.target;
         const targets = Array.isArray(target) ? target : [target];
 
-        return new Error(`Book with such ${targets.join(" and ")} already exists`);
+        return new EntityAlreadyExistsException(targets);
+      }
+
+      if (error.code === "P2025") {
+        return new EntityNotFoundException("Book");
       }
     }
 
-    return error as Error;
+    return new Error("Unexpected error");
   }
 }
 

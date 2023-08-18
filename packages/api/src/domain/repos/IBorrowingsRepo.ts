@@ -17,4 +17,5 @@ export type IBorrowingsRepo = {
   findById(id: string): Promise<Either<Error, Borrowing>>;
   findByBookAndMember(bookId: string, memberId: string): Promise<Either<Error, Borrowing>>;
   save(borrowing: Borrowing): Promise<Either<Error, boolean>>;
+  update(borrowing: Borrowing): Promise<Either<Error, Borrowing>>;
 };

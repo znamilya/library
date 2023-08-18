@@ -1,4 +1,5 @@
 import { Either, left, right } from "@sweet-monads/either";
+import { Guard } from "../../../shared/domain/Guard";
 
 class Isbn {
   private readonly _value: string;
@@ -13,12 +14,9 @@ class Isbn {
 
   // https://www.geeksforgeeks.org/program-check-isbn/
   static isValid(isbn: string): boolean {
-    // length must be 10
     let n = isbn.length;
     if (n != 10) return false;
 
-    // Computing weighted sum of
-    // first 9 digits
     let sum = 0;
     for (let i = 0; i < 9; i++) {
       let digit = parseInt(isbn[i]);
@@ -28,20 +26,21 @@ class Isbn {
       sum += digit * (10 - i);
     }
 
-    // Checking last digit.
     let last = isbn[9];
     if (last != "X" && isNaN(parseInt(last))) return false;
 
-    // If last digit is 'X', add 10
-    // to sum, else add its value.
     sum += last == "X" ? 10 : parseInt(last);
 
-    // Return true if weighted sum
-    // of digits is divisible by 11.
     return sum % 11 == 0;
   }
 
   static create(value: string): Either<Error, Isbn> {
+    const valueGuard = Guard.againstNullOrUndefined(value, "ISBN");
+
+    if (valueGuard.isLeft()) {
+      return left(valueGuard.value);
+    }
+
     if (!Isbn.isValid(value)) {
       return left(new Error("Invalid ISBN"));
     }

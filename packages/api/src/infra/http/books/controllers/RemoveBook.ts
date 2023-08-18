@@ -1,27 +1,33 @@
 import { Request, Response } from "express";
 import { IRemoveBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BaseController } from "../../../../shared";
+import { BaseController, UnknownEntityException } from "../../../../shared";
 
 class RemoveBookController extends BaseController {
-  useCase: IRemoveBookUseCase;
-
-  constructor(useCase: IRemoveBookUseCase) {
+  constructor(private useCase: IRemoveBookUseCase) {
     super();
-
-    this.useCase = useCase;
   }
 
   async executeImpl(req: Request, res: Response) {
     const bookId = req.params.bookId;
 
-    const book = await this.useCase.execute({ bookId });
+    const bookOrError = await this.useCase.execute({ bookId });
 
-    if (book.isLeft()) {
-      return res.status(500).send(book.value.message);
+    if (bookOrError.isLeft()) {
+      const error = bookOrError.value;
+
+      switch (error.constructor) {
+        case UnknownEntityException: {
+          return res.status(404).send({
+            message: error.message,
+          });
+        }
+        default:
+          return this.fail(res, error.message);
+      }
     }
 
-    res.json(BooksMapper.entityToDto(book.value));
+    res.json(BooksMapper.entityToDto(bookOrError.value));
   }
 }
 

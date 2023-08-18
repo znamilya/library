@@ -2,6 +2,7 @@ import { left, mergeInOne, right } from "@sweet-monads/either";
 import { Entity } from "../../../shared/domain";
 import { Guard } from "../../../shared/domain/Guard";
 import { Isbn } from "./ISBN";
+import { ValidationException } from "../../../shared";
 
 type CreateBookProps = {
   title: string;
@@ -44,18 +45,22 @@ class Book extends Entity<BookProps> {
   }
 
   static create(props: CreateBookProps, id?: string) {
-    const isbnOrError = Isbn.create(props.isbn);
     const titleGuard = Guard.againstNullOrUndefined(props.title, "title");
-    const authorGuard = Guard.againstNullOrUndefined(props.author, "author");
 
-    const guardsResult = mergeInOne([titleGuard, authorGuard]);
-
-    if (guardsResult.isLeft()) {
-      return left(guardsResult.value);
+    if (titleGuard.isLeft()) {
+      return left(new ValidationException("title", titleGuard.value));
     }
 
+    const authorGuard = Guard.againstNullOrUndefined(props.author, "author");
+
+    if (authorGuard.isLeft()) {
+      return left(new ValidationException("author", authorGuard.value));
+    }
+
+    const isbnOrError = Isbn.create(props.isbn);
+
     if (isbnOrError.isLeft()) {
-      return left(isbnOrError.value);
+      return left(new ValidationException("ISBN", isbnOrError.value));
     }
 
     return right(

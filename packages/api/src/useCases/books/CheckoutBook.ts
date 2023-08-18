@@ -5,44 +5,42 @@ import { Borrowing } from "../../domain/entities/Borrowing";
 import { IBooksRepo } from "../../domain/repos/IBooksRepo";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { IMembersRepo } from "../../domain/repos/IMembersRepo";
+import { BadParamsException } from "../../shared";
+import { BaseUseCase } from "../../shared/BaseUseCase";
 import { ILogger } from "../../shared/logger/types";
 
-class CheckoutBookUseCase implements ICheckOutBookUseCase {
+class CheckoutBookUseCase
+  extends BaseUseCase<CheckOutBookUseCaseParams, Book>
+  implements ICheckOutBookUseCase
+{
   constructor(
     private booksRepo: IBooksRepo,
     private membersRepo: IMembersRepo,
     private borrowingsRepo: IBorrowingsRepo,
     private logger: ILogger,
-  ) {}
+  ) {
+    super();
+  }
 
-  async execute({ bookId, memberId }: CheckOutBookUseCaseParams): Promise<Either<Error, Book>> {
-    this.logger.info(`Checking out book ${bookId} for member ${memberId}`);
+  async executeImpl({ bookId, memberId }: CheckOutBookUseCaseParams): Promise<Either<Error, Book>> {
     const bookOrError = await this.booksRepo.findById(bookId);
 
     if (bookOrError.isLeft()) {
-      return left(new Error(`Book can't be checked out. ${bookOrError.value}`));
+      this.logger.debug(`[CheckoutBookUseCase] Book not found: ${bookId}`);
+
+      return left(new BadParamsException(bookOrError.value, "bookId"));
     }
 
     const book = bookOrError.value;
-
-    // if (!book.isAvailable()) {
-    //   return left(new Error("Book can't be checked out. It's not available."));
-    // }
-
     const memberOrError = await this.membersRepo.findById(memberId);
 
     if (memberOrError.isLeft()) {
-      return left(new Error(`Book can't be checked out. ${memberOrError.value}`));
+      this.logger.debug(`[CheckoutBookUseCase] Member not found: ${memberId}`);
+
+      return left(new BadParamsException(memberOrError.value, "memberId"));
     }
 
     const member = memberOrError.value;
-
-    // if (!member.canBorrowMoreBooks()) {
-    //   return left(
-    //     new Error("Book can't be checked out. Member has reached the limit of borrowed books."),
-    //   );
-    // }
-
     const borrowing = Borrowing.create({
       bookId: book.id,
       memberId: member.id,
@@ -54,18 +52,14 @@ class CheckoutBookUseCase implements ICheckOutBookUseCase {
     const saveBorrowingResult = await this.borrowingsRepo.save(borrowing);
 
     if (saveBorrowingResult.isLeft()) {
-      return left(new Error(`Book can't be checked out. ${saveBorrowingResult.value}`));
+      this.logger.debug(
+        `[CheckoutBookUseCase] Borrowing not saved: ${saveBorrowingResult.value.message}`,
+      );
+
+      return left(saveBorrowingResult.value);
     }
 
-    // book.checkOut(borrowing.id);
-
-    const saveBookResult = await this.booksRepo.save(book);
-
-    if (saveBookResult.isLeft()) {
-      return left(new Error(`Book can't be checked out. ${saveBookResult.value}`));
-    }
-
-    this.logger.info(`Book ${bookId} checked out for member ${memberId}`);
+    this.logger.debug(`Book checked out: ${bookId} ${memberId}`);
 
     return right(book);
   }

@@ -1,11 +1,8 @@
+import { Member as PrismaMember } from "@prisma/client";
 import { Either } from "@sweet-monads/either";
 import { Member } from "../entities/Member/Member";
 
-export type MemberPersistence = {
-  id: string;
-  name: string;
-  isBlocked: boolean;
-};
+export type MemberPersistence = Omit<PrismaMember, "createdAt" | "updatedAt">;
 
 export type IMembersRepo = {
   findAll(): Promise<Either<Error, Member[]>>;

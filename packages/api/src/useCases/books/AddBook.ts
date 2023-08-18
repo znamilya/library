@@ -3,14 +3,15 @@ import { IAddBookUseCase } from "../../domain";
 import { Book } from "../../domain/entities/Book";
 import { IBooksRepo } from "../../domain/repos/IBooksRepo";
 import { NewBookDto } from "../../dtos/Book";
+import { BaseUseCase } from "../../shared/BaseUseCase";
 import { ILogger } from "../../shared/logger/types";
 
-class AddBookUseCase implements IAddBookUseCase {
-  constructor(private booksRepo: IBooksRepo, private logger: ILogger) {}
+class AddBookUseCase extends BaseUseCase<NewBookDto, Book> implements IAddBookUseCase {
+  constructor(private booksRepo: IBooksRepo, private logger: ILogger) {
+    super();
+  }
 
-  async execute(bookDto: NewBookDto) {
-    this.logger.debug(`Executing AddBookUseCase with book data: ${JSON.stringify(bookDto)}`);
-
+  async executeImpl(bookDto: NewBookDto) {
     const bookOrError = Book.create({
       title: bookDto.title,
       author: bookDto.author,
@@ -18,22 +19,22 @@ class AddBookUseCase implements IAddBookUseCase {
     });
 
     if (bookOrError.isLeft()) {
-      this.logger.debug(`Error while creating book. ${bookOrError.value}`);
-      return left(new Error(`Error while creating book. ${bookOrError.value}`));
+      this.logger.debug(`[AddBookUseCase] Book not created: ${bookOrError.value.message}`);
+
+      return left(bookOrError.value);
     }
 
-    const book = bookOrError.value;
-
-    const saveBookResult = await this.booksRepo.save(book);
+    const saveBookResult = await this.booksRepo.save(bookOrError.value);
 
     if (saveBookResult.isLeft()) {
-      this.logger.debug(`Can't save book. ${saveBookResult.value}`);
-      return left(new Error(`Can't save book. ${saveBookResult.value}`));
+      this.logger.debug(`[AddBookUseCase] Book not saved: ${saveBookResult.value.message}`);
+
+      return left(saveBookResult.value);
     }
 
-    this.logger.debug(`Book saved. Book: ${JSON.stringify(book)}`);
+    this.logger.debug(`[AddBookUseCase] Book saved: ${JSON.stringify(saveBookResult.value)}`);
 
-    return right(book);
+    return saveBookResult;
   }
 }
 

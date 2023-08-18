@@ -1,30 +1,44 @@
 import { Request, Response } from "express";
 import { ICheckInBookUseCase } from "../../../../domain";
-import { BooksMapper } from "../../../../mappers/Books";
-import { BaseController } from "../../../../shared";
+import { BorrowingsMapper } from "../../../../mappers/Borrowings";
+import { BadParamsException, BaseController, UnknownEntityException } from "../../../../shared";
+import { AlreadyCompletedException } from "../../../../useCases/books";
 
 class CheckInBookController extends BaseController {
-  useCase: ICheckInBookUseCase;
-
-  constructor(useCase: ICheckInBookUseCase) {
+  constructor(private useCase: ICheckInBookUseCase) {
     super();
-
-    this.useCase = useCase;
   }
 
   async executeImpl(req: Request, res: Response) {
     const body = req.body;
 
-    const book = await this.useCase.execute({
+    const borrowingOrError = await this.useCase.execute({
       bookId: body.bookId,
       memberId: body.memberId,
     });
 
-    if (book.isLeft()) {
-      return res.status(500).send(book.value.message);
+    if (borrowingOrError.isLeft()) {
+      const error = borrowingOrError.value;
+
+      switch (error.constructor) {
+        case BadParamsException:
+          return res.status(400).send({
+            message: error.message,
+          });
+        case UnknownEntityException:
+          return res.status(404).send({
+            message: error.message,
+          });
+        case AlreadyCompletedException:
+          return res.status(422).send({
+            message: error.message,
+          });
+        default:
+          return this.fail(res, error.message);
+      }
     }
 
-    res.json(BooksMapper.entityToDto(book.value));
+    res.json(BorrowingsMapper.entityToDto(borrowingOrError.value));
   }
 }
 

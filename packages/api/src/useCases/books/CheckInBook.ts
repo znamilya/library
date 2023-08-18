@@ -1,41 +1,56 @@
 import { Either, left, right } from "@sweet-monads/either";
 import { CheckInBookUseCaseParams, ICheckInBookUseCase } from "../../domain";
-import { Book } from "../../domain/entities/Book";
-import { IBooksRepo } from "../../domain/repos/IBooksRepo";
+import { Borrowing } from "../../domain/entities/Borrowing";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
+import { BaseUseCase } from "../../shared/BaseUseCase";
 import { ILogger } from "../../shared/logger/types";
+import { AlreadyCompletedException } from "./errors/AlreadyCompletedException";
 
-class CheckInBookUseCase implements ICheckInBookUseCase {
-  constructor(
-    private booksRepo: IBooksRepo,
-    private borrowingsRepo: IBorrowingsRepo,
-    private logger: ILogger,
-  ) {}
+class CheckInBookUseCase
+  extends BaseUseCase<CheckInBookUseCaseParams, Borrowing>
+  implements ICheckInBookUseCase
+{
+  constructor(private borrowingsRepo: IBorrowingsRepo, private logger: ILogger) {
+    super();
+  }
 
-  async execute({ bookId, memberId }: CheckInBookUseCaseParams): Promise<Either<Error, Book>> {
+  async executeImpl({
+    bookId,
+    memberId,
+  }: CheckInBookUseCaseParams): Promise<Either<Error, Borrowing>> {
     const borrowingOrError = await this.borrowingsRepo.findByBookAndMember(bookId, memberId);
 
     if (borrowingOrError.isLeft()) {
-      return left(new Error(`Book can't be checked in. ${borrowingOrError.value}`));
+      this.logger.debug(
+        `[CheckInBookUseCase] Borrowing not found: ${borrowingOrError.value.message}`,
+      );
+
+      return left(borrowingOrError.value);
     }
 
     const borrowing = borrowingOrError.value;
 
-    borrowing.complete(new Date());
-    this.borrowingsRepo.save(borrowing);
+    if (borrowing.isCompleted()) {
+      const error = new AlreadyCompletedException();
 
-    const bookOrError = await this.booksRepo.findById(borrowing.bookId);
+      this.logger.debug(`[CheckInBookUseCase] Borrowing not checked in: ${error.message}`);
 
-    if (bookOrError.isLeft()) {
-      return left(new Error(`Book can't be checked in. ${bookOrError.value}`));
+      return left(error);
+    } else {
+      borrowing.complete(new Date());
     }
 
-    const book = bookOrError.value;
+    const updateResultOrError = await this.borrowingsRepo.update(borrowing);
 
-    // book.checkIn(borrowing.id);
-    this.booksRepo.save(book);
+    if (updateResultOrError.isLeft()) {
+      this.logger.debug(
+        `[CheckInBookUseCase] Borrowing not saved: ${updateResultOrError.value.message}`,
+      );
 
-    return right(book);
+      return left(updateResultOrError.value);
+    }
+
+    return updateResultOrError;
   }
 }
 

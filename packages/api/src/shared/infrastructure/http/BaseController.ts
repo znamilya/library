@@ -11,6 +11,10 @@ abstract class BaseController {
       // this.fail(res, "An unexpected error occurred");
     }
   }
+
+  fail(res: Response, message: Error | string) {
+    return res.status(500).json({ message });
+  }
 }
 
 export { BaseController };

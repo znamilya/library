@@ -1,29 +1,38 @@
 import { Request, Response } from "express";
 import { ICheckOutBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BaseController } from "../../../../shared";
+import { BadParamsException, BaseController, ConflictException } from "../../../../shared";
 
 class CheckoutBookController extends BaseController {
-  useCase: ICheckOutBookUseCase;
-
-  constructor(useCase: ICheckOutBookUseCase) {
+  constructor(private useCase: ICheckOutBookUseCase) {
     super();
-
-    this.useCase = useCase;
   }
 
   async executeImpl(req: Request, res: Response) {
     const body = req.body;
-    const book = await this.useCase.execute({
+    const bookOrError = await this.useCase.execute({
       bookId: body.bookId,
       memberId: body.memberId,
     });
 
-    if (book.isLeft()) {
-      return res.status(500).send(book.value.message);
+    if (bookOrError.isLeft()) {
+      const error = bookOrError.value;
+
+      switch (error.constructor) {
+        case BadParamsException:
+          return res.status(400).send({
+            message: error.message,
+          });
+        case ConflictException:
+          return res.status(409).send({
+            message: error.message,
+          });
+        default:
+          return this.fail(res, error.message);
+      }
     }
 
-    res.json(BooksMapper.entityToDto(book.value));
+    res.json(BooksMapper.entityToDto(bookOrError.value));
   }
 }
 

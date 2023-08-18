@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { IGetAllBooksUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
 import { BaseController } from "../../../../shared";
+import { IBooksRepo } from "../../../../domain/repos/IBooksRepo";
 
 type BorrowingDto = {
   id: string;
@@ -17,12 +18,8 @@ export type BookDto = {
 };
 
 class GetAllBooksController extends BaseController {
-  useCase: IGetAllBooksUseCase;
-
-  constructor(useCase: IGetAllBooksUseCase) {
+  constructor(private useCase: IGetAllBooksUseCase, private booksRepo: IBooksRepo) {
     super();
-
-    this.useCase = useCase;
   }
 
   async executeImpl(req: Request, res: Response) {
@@ -32,13 +29,17 @@ class GetAllBooksController extends BaseController {
       return res.status(400).send("Title must be a string");
     }
 
-    const books = await this.useCase.execute({ title });
+    // @ts-ignore
+    const booksOrError = await this.booksRepo.findAllEmbedded();
 
-    if (books.isLeft()) {
-      return res.status(500).send(books.value.message);
+    // const booksOrError = await this.useCase.execute({ title });
+
+    if (booksOrError.isLeft()) {
+      return this.fail(res, booksOrError.value.message);
     }
 
-    res.json(books.value.map(BooksMapper.entityToDto));
+    res.json(booksOrError.value);
+    // res.json(booksOrError.value.map(BooksMapper.entityToDto));
   }
 }
 

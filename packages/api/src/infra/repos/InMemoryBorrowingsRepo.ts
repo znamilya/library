@@ -3,6 +3,7 @@ import { Borrowing } from "../../domain/entities/Borrowing";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { BorrowingsMapper } from "../../mappers/Borrowings";
 import { DbContext } from "./InMemory/types";
+import { EntityNotFoundException } from "../../shared/exceptions/repoExceptions/EntityNotFoundException";
 
 class InMemoryBorrowingsRepo implements IBorrowingsRepo {
   constructor(private dbContext: DbContext) {}
@@ -24,7 +25,7 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
     const borrowing = this.dbContext.borrowings.find((borrowing) => borrowing.id === id);
 
     if (!borrowing) {
-      return left(new Error("borrowing not found"));
+      return left(new EntityNotFoundException("Borrowing"));
     }
 
     return right(BorrowingsMapper.persistenceToEntity(borrowing));
@@ -36,7 +37,7 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
     );
 
     if (!borrowing) {
-      return left(new Error("borrowing not found"));
+      return left(new EntityNotFoundException("Borrowing"));
     }
 
     return right(BorrowingsMapper.persistenceToEntity(borrowing));

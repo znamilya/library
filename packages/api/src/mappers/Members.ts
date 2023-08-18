@@ -6,7 +6,8 @@ class MembersMapper {
     return {
       id: member.id,
       name: member.name,
-      isBlocked: member.isBlocked,
+      email: member.email,
+      status: member.status,
     };
   }
 
@@ -14,7 +15,8 @@ class MembersMapper {
     const memberOrError = Member.create(
       {
         name: memberPersistence.name,
-        isBlocked: memberPersistence.isBlocked,
+        email: memberPersistence.email,
+        status: memberPersistence.status,
       },
       memberPersistence.id,
     );
@@ -26,7 +28,8 @@ class MembersMapper {
     return {
       id: member.id,
       name: member.name,
-      isBlocked: member.isBlocked,
+      email: member.email,
+      status: member.status,
     };
   }
 }

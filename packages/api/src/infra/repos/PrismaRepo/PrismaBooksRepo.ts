@@ -3,16 +3,51 @@ import { IBooksRepo } from "../../../domain/repos/IBooksRepo";
 import { BooksMapper } from "../../../mappers/Books";
 import { PrismaRepo } from "./PrismaRepo";
 import { Book } from "../../../domain/entities/Book";
+import { EntityNotFoundException } from "../../../shared";
 
-class PrismaBookRepo extends PrismaRepo implements IBooksRepo {
+class PrismaBooksRepo extends PrismaRepo implements IBooksRepo {
   async findAll() {
-    const books = await this.prisma.book.findMany({
-      where: {
-        isRemoved: false,
-      },
-    });
+    try {
+      const books = await this.prisma.book.findMany({
+        where: {
+          isRemoved: false,
+        },
+      });
 
-    return right(books.map(BooksMapper.persistenceToEntity));
+      return right(books.map(BooksMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
+  async findAllEmbedded() {
+    try {
+      const books = await this.prisma.book.findMany({
+        where: {
+          isRemoved: false,
+        },
+        include: {
+          borrowings: {
+            select: {
+              id: true,
+              checkOutDate: true,
+              checkInDate: true,
+              dueDate: true,
+              member: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return right(books);
+    } catch (error) {
+      return left(this.handleError(error));
+    }
   }
 
   async findByTitle(title: string) {
@@ -41,7 +76,7 @@ class PrismaBookRepo extends PrismaRepo implements IBooksRepo {
       });
 
       if (!book) {
-        return left(new Error("Not found"));
+        return left(new EntityNotFoundException("Book"));
       }
 
       return right(BooksMapper.persistenceToEntity(book));
@@ -67,32 +102,32 @@ class PrismaBookRepo extends PrismaRepo implements IBooksRepo {
     }
   }
 
-  async save(book: Book) {
+  async save(newBook: Book) {
     try {
-      await this.prisma.book.create({
-        data: BooksMapper.entityToPersistence(book),
+      const book = await this.prisma.book.create({
+        data: BooksMapper.entityToPersistence(newBook),
       });
 
-      return right(true);
+      return right(BooksMapper.persistenceToEntity(book));
     } catch (error) {
       return left(this.handleError(error));
     }
   }
 
-  async update(book: Book) {
+  async update(newBook: Book) {
     try {
-      await this.prisma.book.update({
+      const book = await this.prisma.book.update({
         where: {
-          id: book.id,
+          id: newBook.id,
         },
-        data: BooksMapper.entityToPersistence(book),
+        data: BooksMapper.entityToPersistence(newBook),
       });
 
-      return right(true);
+      return right(BooksMapper.persistenceToEntity(book));
     } catch (error) {
       return left(this.handleError(error));
     }
   }
 }
 
-export { PrismaBookRepo };
+export { PrismaBooksRepo };

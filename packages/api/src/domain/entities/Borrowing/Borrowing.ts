@@ -33,6 +33,10 @@ class Borrowing extends Entity<BorrowingProps> {
     this.props.checkInDate = checkInDate;
   }
 
+  isCompleted() {
+    return this.props.checkInDate !== null;
+  }
+
   toJson() {
     return {
       id: this.id,

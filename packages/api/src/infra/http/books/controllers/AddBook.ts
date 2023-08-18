@@ -1,15 +1,12 @@
 import { Request, Response } from "express";
 import { IAddBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BaseController } from "../../../../shared";
+import { BadParamsException, BaseController } from "../../../../shared";
+import { ConflictException } from "../../../../shared/exceptions/useCasesExceptions/ConflictException";
 
 class AddBookController extends BaseController {
-  useCase: IAddBookUseCase;
-
-  constructor(useCase: IAddBookUseCase) {
+  constructor(private useCase: IAddBookUseCase) {
     super();
-
-    this.useCase = useCase;
   }
 
   async executeImpl(req: Request, res: Response) {
@@ -21,19 +18,26 @@ class AddBookController extends BaseController {
       });
     }
 
-    const book = await this.useCase.execute({
+    const bookOrError = await this.useCase.execute({
       title: body.title,
       author: body.author,
       isbn: body.isbn,
     });
 
-    if (book.isLeft()) {
-      return res.status(500).send({
-        message: book.value.message,
-      });
+    if (bookOrError.isLeft()) {
+      const error = bookOrError.value;
+
+      switch (error.constructor) {
+        case BadParamsException:
+          return res.status(400).send({ message: error.message });
+        case ConflictException:
+          return res.status(409).send({ message: error.message });
+        default:
+          return this.fail(res, error.message);
+      }
     }
 
-    res.json(BooksMapper.entityToDto(book.value));
+    res.json(BooksMapper.entityToDto(bookOrError.value));
   }
 }
 
