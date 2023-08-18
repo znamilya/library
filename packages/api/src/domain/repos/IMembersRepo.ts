@@ -2,7 +2,9 @@ import { Member as PrismaMember } from "@prisma/client";
 import { Either } from "@sweet-monads/either";
 import { Member } from "../entities/Member/Member";
 
-export type MemberPersistence = Omit<PrismaMember, "createdAt" | "updatedAt">;
+export type MemberPersistence = Omit<PrismaMember, "createdAt" | "updatedAt"> & {
+  borrowings: { id: string }[];
+};
 
 export type IMembersRepo = {
   findAll(): Promise<Either<Error, Member[]>>;

@@ -6,6 +6,7 @@ type MemberProps = {
   // isBlocked: boolean;
   email: string;
   status: UserStatus;
+  borrowingIds: string[];
 };
 
 class Member extends Entity<MemberProps> {
@@ -19,6 +20,10 @@ class Member extends Entity<MemberProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  get borrowingIds() {
+    return this.props.borrowingIds;
   }
 
   // get isBlocked() {

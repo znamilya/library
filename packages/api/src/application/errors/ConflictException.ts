@@ -1,4 +1,4 @@
-import { UseCaseException } from "./UseCaseException";
+import { UseCaseException } from "../../shared/UseCaseException";
 
 class ConflictException extends UseCaseException {
   cause: Error;

@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { ICheckOutBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BadParamsException, BaseController, ConflictException } from "../../../../shared";
+import { BaseController } from "../../../../shared";
+import {
+  BadParamsException,
+  ConflictException,
+  MaxBorrowingLimitReachedException,
+} from "../../../../application/errors";
 
 class CheckoutBookController extends BaseController {
   constructor(private useCase: ICheckOutBookUseCase) {
@@ -25,6 +30,10 @@ class CheckoutBookController extends BaseController {
           });
         case ConflictException:
           return res.status(409).send({
+            message: error.message,
+          });
+        case MaxBorrowingLimitReachedException:
+          return res.status(422).send({
             message: error.message,
           });
         default:

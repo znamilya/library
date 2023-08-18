@@ -8,7 +8,7 @@ class BooksMapper {
       id: book.id,
       title: book.title,
       author: book.author,
-      isbn: book.isbn,
+      isbn: book.isbn.value,
       isRemoved: book.isRemoved,
     };
   }
@@ -32,7 +32,7 @@ class BooksMapper {
       id: book.id,
       title: book.title,
       author: book.author,
-      isbn: book.isbn,
+      isbn: book.isbn.value,
     };
   }
 }

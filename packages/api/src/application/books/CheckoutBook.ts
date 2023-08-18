@@ -5,9 +5,10 @@ import { Borrowing } from "../../domain/entities/Borrowing";
 import { IBooksRepo } from "../../domain/repos/IBooksRepo";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { IMembersRepo } from "../../domain/repos/IMembersRepo";
-import { BadParamsException } from "../../shared";
+import { MemberCanBorrowMoreBooksRule } from "../../domain/rules";
 import { BaseUseCase } from "../../shared/BaseUseCase";
 import { ILogger } from "../../shared/logger/types";
+import { BadParamsException, MaxBorrowingLimitReachedException } from "../errors";
 
 class CheckoutBookUseCase
   extends BaseUseCase<CheckOutBookUseCaseParams, Book>
@@ -41,6 +42,14 @@ class CheckoutBookUseCase
     }
 
     const member = memberOrError.value;
+    const memberCanBorrowMoreBooksRule = new MemberCanBorrowMoreBooksRule();
+
+    if (!memberCanBorrowMoreBooksRule.isSatisfiedBy(member)) {
+      this.logger.debug(`[CheckoutBookUseCase] Member can't borrow more books: ${memberId}`);
+
+      return left(new MaxBorrowingLimitReachedException());
+    }
+
     const borrowing = Borrowing.create({
       bookId: book.id,
       memberId: member.id,

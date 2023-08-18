@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { ICheckInBookUseCase } from "../../../../domain";
 import { BorrowingsMapper } from "../../../../mappers/Borrowings";
-import { BadParamsException, BaseController, UnknownEntityException } from "../../../../shared";
-import { AlreadyCompletedException } from "../../../../useCases/books";
+import { BaseController } from "../../../../shared";
+import {
+  AlreadyCompletedException,
+  BadParamsException,
+  UnknownEntityException,
+} from "../../../../application/errors";
 
 class CheckInBookController extends BaseController {
   constructor(private useCase: ICheckInBookUseCase) {

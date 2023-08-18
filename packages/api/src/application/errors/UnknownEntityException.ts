@@ -1,4 +1,4 @@
-import { UseCaseException } from "./UseCaseException";
+import { UseCaseException } from "../../shared/UseCaseException";
 
 class UnknownEntityException extends UseCaseException {
   cause: Error;

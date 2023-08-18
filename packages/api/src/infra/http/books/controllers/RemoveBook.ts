@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { IRemoveBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BaseController, UnknownEntityException } from "../../../../shared";
+import { BaseController } from "../../../../shared";
+import { UnknownEntityException } from "../../../../application/errors";
 
 class RemoveBookController extends BaseController {
   constructor(private useCase: IRemoveBookUseCase) {

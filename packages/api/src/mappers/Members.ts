@@ -8,6 +8,7 @@ class MembersMapper {
       name: member.name,
       email: member.email,
       status: member.status,
+      borrowings: member.borrowingIds.map((borrowingId) => ({ id: borrowingId })),
     };
   }
 
@@ -17,6 +18,7 @@ class MembersMapper {
         name: memberPersistence.name,
         email: memberPersistence.email,
         status: memberPersistence.status,
+        borrowingIds: memberPersistence.borrowings.map((borrowing) => borrowing.id),
       },
       memberPersistence.id,
     );

@@ -4,7 +4,7 @@ import {
   checkoutBookUseCase,
   getAllBooksUseCase,
   removeBookUseCase,
-} from "../../../../useCases";
+} from "../../../../application";
 import { PrismaBooksRepo } from "../../../repos";
 import { AddBookController } from "./AddBook";
 import { CheckInBookController } from "./CheckInBook";

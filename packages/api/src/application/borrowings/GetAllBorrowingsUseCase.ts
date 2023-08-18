@@ -17,7 +17,7 @@ class GetAllBorrowingsUseCase implements IGetAllBorrowingsUseCase {
       return right(borrowingsOrError.value.map(BorrowingsMapper.entityToDto));
     }
 
-    const borrowingsOrError = await this.borrowingsRepo.findAll();
+    const borrowingsOrError = await this.borrowingsRepo.findActive();
 
     if (borrowingsOrError.isLeft()) {
       return left(new Error(`Borrowings can't be retrieved. ${borrowingsOrError.value}`));

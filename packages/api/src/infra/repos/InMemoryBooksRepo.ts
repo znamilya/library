@@ -61,10 +61,10 @@ class InMemoryBooksRepo implements IBooksRepo {
   }
 
   async create(newBook: Book) {
-    const existingBook = await this.findBy((book) => book.isbn === newBook.isbn);
+    const existingBook = await this.findBy((book) => book.isbn === newBook.isbn.value);
 
     if (existingBook) {
-      return left(new Error(`Book with ISBN ${newBook.isbn} already exists`));
+      return left(new Error(`Book with ISBN ${newBook.isbn.value} already exists`));
     }
 
     const index = this.dbContext.books.findIndex((b) => b.id === newBook.id);

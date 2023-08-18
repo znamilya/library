@@ -8,7 +8,15 @@ import { EntityNotFoundException } from "../../../shared";
 class PrismaMembersRepo extends PrismaRepo implements IMembersRepo {
   async findAll() {
     try {
-      const members = await this.prisma.member.findMany();
+      const members = await this.prisma.member.findMany({
+        include: {
+          borrowings: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
 
       return right(members.map(MembersMapper.persistenceToEntity));
     } catch (error) {
@@ -21,6 +29,13 @@ class PrismaMembersRepo extends PrismaRepo implements IMembersRepo {
       const member = await this.prisma.member.findUnique({
         where: {
           id: memberId,
+        },
+        include: {
+          borrowings: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
 

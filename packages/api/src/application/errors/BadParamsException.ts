@@ -1,4 +1,4 @@
-import { UseCaseException } from "./UseCaseException";
+import { UseCaseException } from "../../shared/UseCaseException";
 
 class BadParamsException extends UseCaseException {
   cause: Error;

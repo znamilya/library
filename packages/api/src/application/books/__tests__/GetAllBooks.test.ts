@@ -32,13 +32,13 @@ test("main success scenario", async () => {
   expect(books[0]).toBeInstanceOf(Book);
   expect(books[0].id).toBe("1");
   expect(books[0].title).toBe("The Lord of the Rings");
-  expect(books[0].isbn).toBe("9992158107");
+  expect(books[0].isbn.value).toBe("9992158107");
   expect(books[0].author).toBe("J. R. R. Tolkien");
 
   expect(books[1]).toBeInstanceOf(Book);
   expect(books[1].id).toBe("2");
   expect(books[1].title).toBe("The Hobbit");
-  expect(books[1].isbn).toBe("9971502100");
+  expect(books[1].isbn.value).toBe("9971502100");
   expect(books[1].author).toBe("J. R. R. Tolkien");
 });
 

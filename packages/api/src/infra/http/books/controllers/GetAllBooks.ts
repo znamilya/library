@@ -30,16 +30,16 @@ class GetAllBooksController extends BaseController {
     }
 
     // @ts-ignore
-    const booksOrError = await this.booksRepo.findAllEmbedded();
+    // const booksOrError = await this.booksRepo.findAllEmbedded();
 
-    // const booksOrError = await this.useCase.execute({ title });
+    const booksOrError = await this.useCase.execute({ title });
 
     if (booksOrError.isLeft()) {
       return this.fail(res, booksOrError.value.message);
     }
 
-    res.json(booksOrError.value);
-    // res.json(booksOrError.value.map(BooksMapper.entityToDto));
+    // res.json(booksOrError.value);
+    res.json(booksOrError.value.map(BooksMapper.entityToDto));
   }
 }
 

@@ -4,7 +4,7 @@ import { Borrowing } from "../../domain/entities/Borrowing";
 import { IBorrowingsRepo } from "../../domain/repos/IBorrowingsRepo";
 import { BaseUseCase } from "../../shared/BaseUseCase";
 import { ILogger } from "../../shared/logger/types";
-import { AlreadyCompletedException } from "./errors/AlreadyCompletedException";
+import { AlreadyCompletedException } from "../errors/AlreadyCompletedException";
 
 class CheckInBookUseCase
   extends BaseUseCase<CheckInBookUseCaseParams, Borrowing>

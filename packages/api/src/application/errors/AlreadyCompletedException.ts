@@ -1,4 +1,4 @@
-import { UseCaseException } from "../../../shared";
+import { UseCaseException } from "../../shared/UseCaseException";
 
 class AlreadyCompletedException extends UseCaseException {
   constructor() {

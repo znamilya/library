@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { IAddBookUseCase } from "../../../../domain";
 import { BooksMapper } from "../../../../mappers/Books";
-import { BadParamsException, BaseController } from "../../../../shared";
-import { ConflictException } from "../../../../shared/exceptions/useCasesExceptions/ConflictException";
+import { BaseController } from "../../../../shared";
+import { BadParamsException, ConflictException } from "../../../../application/errors";
 
 class AddBookController extends BaseController {
   constructor(private useCase: IAddBookUseCase) {
@@ -21,7 +21,7 @@ class AddBookController extends BaseController {
     const bookOrError = await this.useCase.execute({
       title: body.title,
       author: body.author,
-      isbn: body.isbn,
+      isbn: body.isbn.value,
     });
 
     if (bookOrError.isLeft()) {

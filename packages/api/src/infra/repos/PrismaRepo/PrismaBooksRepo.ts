@@ -12,6 +12,9 @@ class PrismaBooksRepo extends PrismaRepo implements IBooksRepo {
         where: {
           isRemoved: false,
         },
+        orderBy: {
+          title: "asc",
+        },
       });
 
       return right(books.map(BooksMapper.persistenceToEntity));
@@ -58,6 +61,9 @@ class PrismaBooksRepo extends PrismaRepo implements IBooksRepo {
           title: {
             contains: title,
           },
+        },
+        orderBy: {
+          title: "asc",
         },
       });
 

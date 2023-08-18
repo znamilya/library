@@ -16,6 +16,34 @@ class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
     }
   }
 
+  async findActive() {
+    try {
+      const borrowings = await this.prisma.borrowing.findMany({
+        where: {
+          checkInDate: null,
+        },
+      });
+
+      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
+  async findManyByMemberId(memberId: string) {
+    try {
+      const borrowings = await this.prisma.borrowing.findMany({
+        where: {
+          memberId,
+        },
+      });
+
+      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
   async findByBookId(bookId: string) {
     try {
       const borrowings = await this.prisma.borrowing.findMany({

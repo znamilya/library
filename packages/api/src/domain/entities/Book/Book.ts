@@ -19,19 +19,19 @@ type BookProps = {
 };
 
 class Book extends Entity<BookProps> {
-  get title() {
+  get title(): string {
     return this.props.title;
   }
 
-  get isbn() {
-    return this.props.isbn.value;
+  get isbn(): Isbn {
+    return this.props.isbn;
   }
 
-  get author() {
+  get author(): string {
     return this.props.author;
   }
 
-  get isRemoved() {
+  get isRemoved(): boolean {
     return this.props.isRemoved;
   }
 
@@ -39,7 +39,7 @@ class Book extends Entity<BookProps> {
     return {
       id: this.id,
       title: this.title,
-      isbn: this.isbn,
+      isbn: this.isbn.value,
       author: this.author,
     };
   }
