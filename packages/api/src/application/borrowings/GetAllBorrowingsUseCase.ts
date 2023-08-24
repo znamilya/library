@@ -8,7 +8,7 @@ class GetAllBorrowingsUseCase implements IGetAllBorrowingsUseCase {
 
   async execute({ bookId }: GetAllBorrowingsUseCaseParams = {}) {
     if (bookId) {
-      const borrowingsOrError = await this.borrowingsRepo.findByBookId(bookId);
+      const borrowingsOrError = await this.borrowingsRepo.findAllByBookId(bookId);
 
       if (borrowingsOrError.isLeft()) {
         return left(new Error(`Borrowings can't be retrieved. ${borrowingsOrError.value}`));
@@ -17,7 +17,7 @@ class GetAllBorrowingsUseCase implements IGetAllBorrowingsUseCase {
       return right(borrowingsOrError.value.map(BorrowingsMapper.entityToDto));
     }
 
-    const borrowingsOrError = await this.borrowingsRepo.findActive();
+    const borrowingsOrError = await this.borrowingsRepo.findAllActive();
 
     if (borrowingsOrError.isLeft()) {
       return left(new Error(`Borrowings can't be retrieved. ${borrowingsOrError.value}`));

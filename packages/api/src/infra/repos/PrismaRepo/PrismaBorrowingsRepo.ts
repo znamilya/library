@@ -8,7 +8,11 @@ import { Borrowing } from "../../../domain/entities/Borrowing";
 class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
   async findAll() {
     try {
-      const borrowings = await this.prisma.borrowing.findMany();
+      const borrowings = await this.prisma.borrowing.findMany({
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
 
       return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
     } catch (error) {
@@ -16,25 +20,14 @@ class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
     }
   }
 
-  async findActive() {
+  async findAllActive() {
     try {
       const borrowings = await this.prisma.borrowing.findMany({
         where: {
           checkInDate: null,
         },
-      });
-
-      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
-    } catch (error) {
-      return left(this.handleError(error));
-    }
-  }
-
-  async findManyByMemberId(memberId: string) {
-    try {
-      const borrowings = await this.prisma.borrowing.findMany({
-        where: {
-          memberId,
+        orderBy: {
+          createdAt: "asc",
         },
       });
 
@@ -44,7 +37,63 @@ class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
     }
   }
 
-  async findByBookId(bookId: string) {
+  async findAllActiveOverdue() {
+    try {
+      const borrowings = await this.prisma.borrowing.findMany({
+        where: {
+          checkInDate: null,
+          dueDate: {
+            lt: new Date(),
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
+  async findAllCompleted() {
+    try {
+      const borrowings = await this.prisma.borrowing.findMany({
+        where: {
+          checkInDate: {
+            not: null,
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
+  async findAllByMemberId(memberId: string) {
+    try {
+      const borrowings = await this.prisma.borrowing.findMany({
+        where: {
+          memberId,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
+    } catch (error) {
+      return left(this.handleError(error));
+    }
+  }
+
+  async findAllByBookId(bookId: string) {
     try {
       const borrowings = await this.prisma.borrowing.findMany({
         where: {
@@ -58,7 +107,7 @@ class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
     }
   }
 
-  async findById(borrowingId: string) {
+  async findOneById(borrowingId: string) {
     try {
       const borrowing = await this.prisma.borrowing.findUnique({
         where: {
@@ -76,7 +125,7 @@ class PrismaBorrowingsRepo extends PrismaRepo implements IBorrowingsRepo {
     }
   }
 
-  async findByBookAndMember(bookId: string, memberId: string) {
+  async findOneByBookIdAndMemberId(bookId: string, memberId: string) {
     try {
       const borrowing = await this.prisma.borrowing.findFirst({
         where: {

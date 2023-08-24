@@ -13,11 +13,13 @@ export type BorrowingPersistence = {
 
 export type IBorrowingsRepo = {
   findAll(): Promise<Either<Error, Borrowing[]>>;
-  findActive(): Promise<Either<Error, Borrowing[]>>;
-  findByBookId(bookId: string): Promise<Either<Error, Borrowing[]>>;
-  findManyByMemberId(memberId: string): Promise<Either<Error, Borrowing[]>>;
-  findById(id: string): Promise<Either<Error, Borrowing>>;
-  findByBookAndMember(bookId: string, memberId: string): Promise<Either<Error, Borrowing>>;
+  findAllActive(): Promise<Either<Error, Borrowing[]>>;
+  findAllCompleted(): Promise<Either<Error, Borrowing[]>>;
+  findAllActiveOverdue(): Promise<Either<Error, Borrowing[]>>;
+  findAllByBookId(bookId: string): Promise<Either<Error, Borrowing[]>>;
+  findAllByMemberId(memberId: string): Promise<Either<Error, Borrowing[]>>;
+  findOneById(id: string): Promise<Either<Error, Borrowing>>;
+  findOneByBookIdAndMemberId(bookId: string, memberId: string): Promise<Either<Error, Borrowing>>;
   save(borrowing: Borrowing): Promise<Either<Error, boolean>>;
   update(borrowing: Borrowing): Promise<Either<Error, Borrowing>>;
 };

@@ -9,7 +9,12 @@ class GetAllBooksUseCase implements IGetAllBooksUseCase {
   async execute({ title }: GetAllBooksUseParamsParams = {}) {
     const booksOrError = title
       ? await this.booksRepo.findByTitle(title)
-      : await this.booksRepo.findAll();
+      : await this.booksRepo.findAll({
+          pagination: {
+            limit: 2,
+            page: 2,
+          },
+        });
 
     if (booksOrError.isLeft()) {
       this.logger.debug(`[GetAllBooksUseCase] Books not found: ${booksOrError.value.message}`);

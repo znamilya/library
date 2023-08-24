@@ -1,12 +1,12 @@
 import { left, right } from "@sweet-monads/either";
-import { IBooksRepo } from "../../../domain/repos/IBooksRepo";
-import { BooksMapper } from "../../../mappers/Books";
-import { PrismaRepo } from "./PrismaRepo";
 import { Book } from "../../../domain/entities/Book";
+import { FindAllParams, IBooksRepo } from "../../../domain/repos/IBooksRepo";
+import { BooksMapper } from "../../../mappers/Books";
 import { EntityNotFoundException } from "../../../shared";
+import { PrismaRepo } from "./PrismaRepo";
 
 class PrismaBooksRepo extends PrismaRepo implements IBooksRepo {
-  async findAll() {
+  async findAll({ pagination }: FindAllParams = {}) {
     try {
       const books = await this.prisma.book.findMany({
         where: {
@@ -15,10 +15,14 @@ class PrismaBooksRepo extends PrismaRepo implements IBooksRepo {
         orderBy: {
           title: "asc",
         },
+        skip: pagination?.page ? (pagination.page - 1) * pagination.limit : 0,
+        take: pagination?.limit,
       });
 
       return right(books.map(BooksMapper.persistenceToEntity));
     } catch (error) {
+      console.log(error);
+
       return left(this.handleError(error));
     }
   }

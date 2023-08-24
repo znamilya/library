@@ -18,7 +18,7 @@ class CheckInBookUseCase
     bookId,
     memberId,
   }: CheckInBookUseCaseParams): Promise<Either<Error, Borrowing>> {
-    const borrowingOrError = await this.borrowingsRepo.findByBookAndMember(bookId, memberId);
+    const borrowingOrError = await this.borrowingsRepo.findOneByBookIdAndMemberId(bookId, memberId);
 
     if (borrowingOrError.isLeft()) {
       this.logger.debug(

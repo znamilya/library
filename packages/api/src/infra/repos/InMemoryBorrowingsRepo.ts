@@ -14,14 +14,14 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
     return right(borrowings.map(BorrowingsMapper.persistenceToEntity));
   }
 
-  async findByBookId(bookId: string) {
+  async findAllByBookId(bookId: string) {
     const { borrowings } = this.dbContext;
     const finalBorrowings = borrowings.filter((borrowing) => borrowing.bookId === bookId);
 
     return right(finalBorrowings.map(BorrowingsMapper.persistenceToEntity));
   }
 
-  async findById(id: string) {
+  async findOneById(id: string) {
     const borrowing = this.dbContext.borrowings.find((borrowing) => borrowing.id === id);
 
     if (!borrowing) {
@@ -31,7 +31,7 @@ class InMemoryBorrowingsRepo implements IBorrowingsRepo {
     return right(BorrowingsMapper.persistenceToEntity(borrowing));
   }
 
-  async findByBookAndMember(bookId: string, memberId: string) {
+  async findOneByBookIdAndMemberId(bookId: string, memberId: string) {
     const borrowing = this.dbContext.borrowings.find(
       (borrowing) => borrowing.bookId === bookId && borrowing.memberId === memberId,
     );
